@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ═══════════════════════════════════════════════════════════════
+     HOW TO EDIT THIS FILE
+     1. Search for text in [square brackets] and replace it with
+        your own details (name, research, links, etc.).
+     2. To add a publication, copy one <li class="pub"> block and
+        edit it.
+     3. To link your CV, put a file named cv.pdf in the same folder
+        as this file (or change the href on the "Download CV" link).
+     ═══════════════════════════════════════════════════════════════ -->
+<title>[Your Name] — Researcher</title>
+<meta name="description" content="Personal website of [Your Name]: research, publications, CV, and interests.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper:  #F5F7F4;   /* cool off-white page */
+    --ink:    #22252B;   /* near-black text */
+    --muted:  #5C6470;   /* secondary gray */
+    --accent: #1F6F6B;   /* deep teal: links & highlights */
+    --rule:   #D8DED7;   /* hairline dividers */
+    --note:   #7A8578;   /* margin-note gray-green */
+    --serif:  "Newsreader", Georgia, serif;
+    --mono:   "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+
+  body {
+    font-family: var(--serif);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { text-decoration-thickness: 2px; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── Top navigation ─────────────────────────────── */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+  nav .brand { color: var(--ink); text-decoration: none; font-weight: 500; }
+  nav ul { display: flex; gap: 1.4rem; list-style: none; }
+  nav ul a { color: var(--muted); text-decoration: none; }
+  nav ul a:hover { color: var(--accent); }
+
+  /* ── Header / hero ──────────────────────────────── */
+  header.hero { padding: 5rem 0 3.5rem; }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .keywords {
+    margin-top: 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .keywords span::after { content: " · "; color: var(--rule); }
+  .keywords span:last-child::after { content: ""; }
+  .hero p.lede {
+    margin-top: 2rem;
+    max-width: 34em;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── Section scaffolding ────────────────────────── */
+  section { padding: 3.5rem 0; border-top: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.8rem;
+  }
+
+  /* Two-column: main text + margin notes (the "sidenote" layout) */
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 40em) 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+  .sidenote {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--note);
+    border-left: 2px solid var(--rule);
+    padding-left: 1rem;
+    position: sticky;
+    top: 2rem;
+  }
+  .sidenote strong { color: var(--ink); font-weight: 500; }
+
+  .cols p + p { margin-top: 1.1rem; }
+
+  /* ── Publications ───────────────────────────────── */
+  ul.pubs { list-style: none; margin-top: 0.5rem; }
+  .pub {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1.2rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .pub:last-child { border-bottom: none; }
+  .pub .year {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+  .pub .title { font-size: 1.05rem; font-weight: 500; }
+  .pub .venue {
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.15rem;
+  }
+  .pub .links {
+    margin-top: 0.35rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+  }
+  .pub .links a { margin-right: 0.9rem; }
+
+  /* ── CV section ─────────────────────────────────── */
+  .cv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 0.5rem;
+  }
+  .cv-block h3 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+  .cv-block ul { list-style: none; }
+  .cv-block li { padding: 0.35rem 0; font-size: 0.98rem; }
+  .cv-block li span {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .btn {
+    display: inline-block;
+    margin-top: 2.2rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    color: var(--paper);
+    background: var(--accent);
+    text-decoration: none;
+    padding: 0.75rem 1.4rem;
+    border-radius: 3px;
+  }
+  .btn:hover { background: #185450; }
+
+  /* ── Interests ──────────────────────────────────── */
+  .interests {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.5rem;
+  }
+  .interest {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.3rem 1.4rem;
+    background: #FCFDFB;
+  }
+  .interest h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.4rem; }
+  .interest p { font-size: 0.95rem; color: var(--muted); line-height: 1.55; }
+
+  /* ── Footer / contact ───────────────────────────── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 3rem 0 4rem;
+  }
+  footer .contact {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+  }
+  footer .fine {
+    margin-top: 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── Mobile ─────────────────────────────────────── */
+  @media (max-width: 760px) {
+    .cols { grid-template-columns: 1fr; gap: 1.5rem; }
+    .sidenote { position: static; }
+    nav ul { gap: 1rem; }
+    header.hero { padding: 3.5rem 0 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <nav aria-label="Main">
+    <a class="brand" href="#top">[Y. Name]</a>
+    <ul>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="#interests">Interests</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO — your name and one-line pitch ══ -->
+  <header class="hero" id="top">
+    <h1>[Your Name],<br>studying <em>[your research area]</em>.</h1>
+    <p class="keywords">
+      <span>[keyword one]</span><span>[keyword two]</span><span>[keyword three]</span><span>[institution]</span>
+    </p>
+    <p class="lede">
+      [Two or three sentences about who you are: your role, your institution,
+      and the question that drives your research. Keep it human — this is the
+      first thing visitors read.]
+    </p>
+  </header>
+
+  <!-- ══ RESEARCH ══ -->
+  <section id="research">
+    <p class="eyebrow">Research</p>
+    <div class="cols">
+      <div>
+        <p>
+          [A paragraph describing your main line of research. What problem are
+          you working on, why does it matter, and what's your angle on it?]
+        </p>
+        <p>
+          [A second paragraph for methods, collaborations, or current projects.
+          Delete it if one paragraph is enough.]
+        </p>
+
+        <ul class="pubs">
+          <!-- Copy this <li> block to add more publications -->
+          <li class="pub">
+            <div class="year">2026</div>
+            <div>
+              <div class="title">[Title of your most recent paper]</div>
+              <div class="venue">[Journal or Conference Name]. With [Co-author A] and [Co-author B].</div>
+              <div class="links"><a href="#">PDF</a><a href="#">DOI</a><a href="#">Code</a></div>
+            </div>
+          </li>
+          <li class="pub">
+            <div class="year">2025</div>
+            <div>
+              <div class="title">[Title of an earlier paper]</div>
+              <div class="venue">[Journal or Conference Name].</div>
+              <div class="links"><a href="#">PDF</a><a href="#">DOI</a></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- The margin column: a small aside, like a note in a book margin -->
+      <aside class="sidenote">
+        <strong>Currently:</strong> [what you're working on right now — a paper
+        under review, a new dataset, a grant]. <br><br>
+        For the full list of publications, see my
+        <a href="#">[Google Scholar]</a> profile.
+      </aside>
+    </div>
+  </section>
+
+  <!-- ══ CV ══ -->
+  <section id="cv">
+    <p class="eyebrow">Curriculum Vitae</p>
+    <div class="cv-grid">
+      <div class="cv-block">
+        <h3>Education</h3>
+        <ul>
+          <li>[PhD, Field] <span>[University], [year–year]</span></li>
+          <li>[MSc, Field] <span>[University], [year]</span></li>
+          <li>[BSc, Field] <span>[University], [year]</span></li>
+        </ul>
+      </div>
+      <div class="cv-block">
+        <h3>Positions</h3>
+        <ul>
+          <li>[Current role] <span>[Institution], [year]–present</span></li>
+          <li>[Previous role] <span>[Institution], [years]</span></li>
+        </ul>
+      </div>
+      <div class="cv-block">
+        <h3>Selected honors</h3>
+        <ul>
+          <li>[Award or fellowship] <span>[Granting body], [year]</span></li>
+          <li>[Award or fellowship] <span>[Granting body], [year]</span></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Put a file named cv.pdf next to this index.html for this link to work -->
+    <a class="btn" href="cv.pdf" download>Download full CV (PDF)</a>
+  </section>
+
+  <!-- ══ PERSONAL INTERESTS ══ -->
+  <section id="interests">
+    <p class="eyebrow">Beyond the research</p>
+    <div class="interests">
+      <div class="interest">
+        <h3>[Interest one, e.g. Hiking]</h3>
+        <p>[A sentence or two — a favorite trail, how long you've been at it,
+        why you love it.]</p>
+      </div>
+      <div class="interest">
+        <h3>[Interest two, e.g. Photography]</h3>
+        <p>[A sentence or two. You can link to a gallery or account here.]</p>
+      </div>
+      <div class="interest">
+        <h3>[Interest three, e.g. Cooking]</h3>
+        <p>[A sentence or two. Feel free to add or remove these cards.]</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CONTACT / FOOTER ══ -->
+  <footer id="contact">
+    <p class="eyebrow">Contact</p>
+    <div class="contact">
+      <a href="mailto:you@university.edu">you@university.edu</a>
+      <a href="#">[Google Scholar]</a>
+      <a href="#">[GitHub]</a>
+      <a href="#">[LinkedIn]</a>
+    </div>
+    <p class="fine">© 2026 [Your Name]. Built by hand with plain HTML &amp; CSS.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
