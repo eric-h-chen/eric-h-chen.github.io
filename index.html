@@ -114,13 +114,17 @@
       0 0 0 9px var(--paper),
       0 0 0 10px rgba(31, 111, 107, 0.4);
   }
-  /* The photo is full-body, so it's zoomed and panned onto the face.
-     width = zoom (100% would fit the frame); left/top = pan.       */
+  /* The photo is a three-quarter shot, so it's zoomed and panned onto the face.
+     width = zoom (100% would fit the frame); left/top = pan. All three are
+     percentages of the frame, so the mobile size crops identically.
+     Re-tune these if the image is ever swapped. NB palace.JPG is stored
+     sideways with EXIF orientation 6; the browser rights it to 4284x5712,
+     and these numbers are measured against that corrected portrait.       */
   .portrait img {
     position: absolute;
-    width: 220%;
-    left: -67%;
-    top: -71%;
+    width: 390%;
+    left: -171%;
+    top: -196%;
     display: block;
   }
   .hero h1 em { font-style: italic; color: var(--accent); }
@@ -801,7 +805,7 @@
         <h1>Eric Chen</h1>
         <p class="lede">
           I'm an undergraduate and coterminal master's student at Stanford, studying
-          computer science and mathematics. I do research in the <a href="https://stairlab.stanford.edu/">Stanford Trustworthy AI Research</a> lab under Professor <a href="https://cs.stanford.edu/~sanmi/">Sanmi Koyejo</a>.
+          computer science and mathematics. I do research in the <a href="https://stairlab.stanford.edu/">Stanford Trustworthy AI Research</a> lab under Professor <a href="https://cs.stanford.edu/~sanmi/">Sanmi Koyejo</a>. Last summer, I was also an Algorithm Developer Intern at Hudson River Trading.
         </p>
         <p class="lede">
           I'm generally interested in LLMs, reasoning, evaluation, and benchmarking. Please feel free to reach out to me! I'm always open to chat.
@@ -810,7 +814,7 @@
 
       <div>
         <div class="portrait">
-          <img src="pic_carmel.jpg" alt="Portrait of Eric Chen.">
+          <img src="palace.JPG" alt="Portrait of Eric Chen.">
         </div>
       </div>
     </div>
@@ -1213,7 +1217,7 @@
 
       <div class="project" data-key="cs229">
         <h3>IGPT: Imitation Game Personal Texter</h3>
-        <div class="meta">CS 229 · Ng, Charikar &amp; Guestrin · Sept – Dec 2024</div>
+        <div class="meta">CS 229 · Profs. Ng, Charikar &amp; Guestrin · Sept – Dec 2024</div>
         <ul>
           <li>Built a reply system that imitates one person's texting style, comparing
               LoRA fine-tuning of Llama-2-7B against in-context learning with GPT-4o.</li>
@@ -1309,7 +1313,7 @@
 
   <!-- ══ PERSONAL INTERESTS ══ -->
   <section id="interests">
-    <p class="eyebrow">Non-serious stuff</p>
+    <p class="eyebrow">Not-so-serious stuff</p>
     <div class="interests">
       <div class="interest">
         <h3>Piano and singing</h3>
