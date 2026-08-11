@@ -355,7 +355,7 @@
   .tl-scroll { overflow-x: auto; overflow-y: visible; scrollbar-width: thin; }
   .tl-inner {
     position: relative;
-    min-width: 700px;
+    min-width: 820px;   /* below this the track scrolls rather than crowding */
     height: 192px;
     margin: 0 1.6rem;   /* room for the first and last bead */
   }
@@ -395,6 +395,7 @@
   .tl-node {
     position: absolute;
     top: 130px;
+    z-index: 2;   /* a pip landing on the same month tucks its stem behind */
     transform: translate(-50%, -50%);
     width: 46px; height: 46px;
     padding: 0;
@@ -439,6 +440,7 @@
   .tl-mini {
     position: absolute;
     bottom: 62px;        /* .tl-inner height (192) − the line's top (130) */
+    z-index: 1;          /* under the beads — see the note on .tl-node */
     transform: translateX(-50%);
     height: 48px;
     width: 22px;         /* a bare 7px dot is too small to aim at */
@@ -529,6 +531,14 @@
     scroll-margin-top: calc(var(--nav-h) + 1.5rem);
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
   }
+  /* A paper already has a margin rule for hover — a jump just pins it on */
+  .pub { scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+  .pub.is-active::before, .pub.is-target::before { opacity: 1; }
+  .pub.is-target::before {
+    box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 5px rgba(31, 111, 107, 0.18);
+  }
+  .pub.is-active .year, .pub.is-target .year { color: var(--accent); }
+  .pub.is-target .title a { color: var(--accent); }
   .project.is-active, .project.is-target {
     border-color: var(--accent);
     box-shadow: 0 0 0 4px rgba(31, 111, 107, 0.12);
@@ -794,7 +804,7 @@
           computer science and mathematics. I do research in the <a href="https://stairlab.stanford.edu/">Stanford Trustworthy AI Research</a> lab under Professor <a href="https://cs.stanford.edu/~sanmi/">Sanmi Koyejo</a>.
         </p>
         <p class="lede">
-          I'm generally interested in LLMs, reasoning, evaluation, and benchmarking. Please feel free to reach out!
+          I'm generally interested in LLMs, reasoning, evaluation, and benchmarking. Please feel free to reach out to me! I'm always open to chat.
         </p>
       </div>
 
@@ -835,7 +845,7 @@
        Until a file exists the bead shows initials instead.              -->
   <!-- The whole section is hidden until the script places the markers, so a
        browser with JS off gets no orphaned heading over an empty strip. -->
-  <section id="path" aria-label="Timeline of roles and class projects" hidden>
+  <section id="path" aria-label="Timeline of roles, papers and projects" hidden>
     <p class="eyebrow">Timeline</p>
     <div class="timeline" id="timeline">
       <div class="tl-scroll">
@@ -862,8 +872,40 @@
             <span class="tl-fallback" hidden>HRT</span>
           </button>
 
-          <!-- Minor ticks: class projects. Same data-at placement as a bead;
-               data-key must match a .project's data-key down in Projects. -->
+          <!-- Pips: papers and projects. Same data-at placement as a bead;
+               data-key must match a .pub or .project data-key further down the
+               page, and the hover card names whichever it finds. A pip whose
+               month collides with a bead tucks its stem behind it. -->
+          <button type="button" class="tl-mini" data-key="primes" data-at="2022-01"
+                  data-what="MIT PRIMES-USA" data-where="Mathematics research · Jan 2022 – May 2024" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="lame" data-at="2023-01"
+                  data-what="Unitary conditions for Lamé and Heun operators" data-where="Joint Mathematics Meetings · Jan 2023" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="fibrinogen" data-at="2022-11"
+                  data-what="Coarse graining MD simulations of fibrinogen" data-where="Materials Research Society · Fall 2022" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="bones" data-at="2024-02"
+                  data-what="Machine learning on broken animal bones" data-where="Journal of Human Evolution · Feb 2024" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="mlab" data-at="2024-06"
+                  data-what="Team MLab at SemEval-2024 Task 8" data-where="SemEval-2024 · June 2024" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="mog" data-at="2026-07"
+                  data-what="Mixture of Graders" data-where="ICML 2026 (AI4MATH)" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
           <button type="button" class="tl-mini" data-key="cs231n" data-at="2024-04"
                   data-what="Self-driving perception models" data-where="CS 231N · Apr – June 2024" aria-describedby="tlTip">
             <span class="mini-dot"></span>
@@ -914,7 +956,7 @@
         </p> -->
 
         <ul class="pubs">
-          <li class="pub">
+          <li class="pub" data-key="mog">
             <div class="year">2026</div>
             <div>
               <div class="title"><a href="https://openreview.net/pdf?id=MDArMFusA7">Mixture of Graders: Adaptive Strategy Routing for LLM-Based Mathematical Evaluation</a></div>
@@ -946,7 +988,7 @@
               </p></div></div>
             </div>
           </li>
-          <li class="pub">
+          <li class="pub" data-key="judges">
             <div class="year">2026</div>
             <div>
               <div class="title"><a href="https://openreview.net/pdf?id=vdXPorr099">Rethinking LLM Judges: Chain-of-Thought and Multi-Step Pipelines for Math Grading</a></div>
@@ -992,7 +1034,7 @@
               </p></div></div>
             </div>
           </li>
-          <li class="pub">
+          <li class="pub" data-key="mlab">
             <div class="year">2024</div>
             <div>
               <div class="title"><a href="https://aclanthology.org/2024.semeval-1.210/">Team MLab at SemEval-2024 Task 8: Analyzing Encoder Embeddings for Detecting LLM-generated Text</a></div>
@@ -1012,7 +1054,7 @@
               </p></div></div>
             </div>
           </li>
-          <li class="pub">
+          <li class="pub" data-key="bones">
             <div class="year">2024</div>
             <div>
               <div class="title"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0047248424000034">Using Machine Learning on New Feature Sets Extracted From 3D Models of Broken Animal Bones</a></div>
@@ -1033,7 +1075,7 @@
               </p></div></div>
             </div>
           </li>
-          <li class="pub">
+          <li class="pub" data-key="lame">
             <div class="year">2023</div>
             <div>
               <div class="title"><a href="https://math.mit.edu/research/highschool/primes/materials/2022/Chen-Zitzewitz.pdf">Unitary Conditions for Lamé and Heun Differential Operators</a></div>
@@ -1055,12 +1097,12 @@
               </p></div></div>
             </div>
           </li>
-          <li class="pub">
-            <div class="year">2023</div>
+          <li class="pub" data-key="fibrinogen">
+            <div class="year">2022</div>
             <div>
               <div class="title"><a href="https://docs.google.com/presentation/d/1dNWLKaB_HyeP7CYZbnSLDJueCkSHKQdRepdJFpM91VI/edit?usp=sharing">Coarse Graining to Expedite Molecular Dynamics Simulations of Solvated Fibrinogen</a></div>
               <div class="authors"><strong>Eric Chen</strong>, Ziji Zhang, Yuefan Deng, Peng Zhang, Miriam Rafailovich</div>
-              <div class="venue">Oral Presentation at the Materials Research Society, Fall 2023 Meeting. From the Garcia Research Program, Stony Brook University.</div>
+              <div class="venue">Oral Presentation at the Materials Research Society, Fall 2022 Meeting. From the Garcia Research Program, Stony Brook University.</div>
               <div class="links">
                 <a href="https://docs.google.com/presentation/d/1dNWLKaB_HyeP7CYZbnSLDJueCkSHKQdRepdJFpM91VI/edit?usp=sharing">Slides</a>
                 <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
@@ -1195,7 +1237,7 @@
         <div class="links"><a href="cs231n.pdf">Paper</a></div>
       </div>
 
-      <div class="project">
+      <div class="project" data-key="barcode">
         <h3>Barcode Buddy</h3>
         <div class="meta">JavaScript, React · 2023</div>
         <ul>
@@ -1205,7 +1247,7 @@
         <div class="links"><a href="https://barcode-buddy.vercel.app">Live site</a></div>
       </div>
 
-      <div class="project">
+      <div class="project" data-key="primes">
         <h3>MIT PRIMES-USA</h3>
         <div class="meta">Mathematics Researcher · Jan 2022 – May 2024</div>
         <ul>
@@ -1330,21 +1372,41 @@
   var tipWhat = tip.querySelector('.tip-what');
   var tipWhere = tip.querySelector('.tip-where');
   var tipJump = tip.querySelector('.tip-jump');
-  /* A role in Experience or a card in Projects — whatever a tick points at */
-  var TARGETS = '.role[data-key], .project[data-key]';
+  /* A role, a paper or a project card — whatever a marker points at */
+  var TARGETS = '.role[data-key], .pub[data-key], .project[data-key]';
 
-  var AXIS_START = 2023 * 12 + 10;   // Oct 2023 — a little air before the first bead
+  function targetFor(key) {
+    return document.querySelector('.role[data-key="' + key + '"], .pub[data-key="' + key
+                                  + '"], .project[data-key="' + key + '"]');
+  }
+  /* What the card's jump line calls the thing it points at */
+  function nounFor(el) {
+    if (!el) return 'entry';
+    return el.classList.contains('pub') ? 'paper'
+         : el.classList.contains('project') ? 'project' : 'role';
+  }
+
+  var AXIS_START = 2021 * 12 + 10;   // Oct 2021 — a little air before the first pip
+  var AXIS_KNEE  = 2024 * 12 + 1;    // Jan 2024 — where the scale opens out
   var AXIS_END   = 2026 * 12 + 10;   // Oct 2026
-  var SPAN = AXIS_END - AXIS_START;
+  var KNEE_PCT   = 22;               // share of the track given to 2022–2023
 
+  /* The axis is deliberately not to scale: 2022–2023 hold a handful of one-off
+     items, so they share a narrow slice up to the knee, and Jan 2024 onward —
+     where nearly everything is — gets the rest. The labelled year ticks show
+     the change of pace, so the squeeze reads rather than deceives. */
   function pct(value) {
     var p = value.split('-');
     var months = parseInt(p[0], 10) * 12 + parseInt(p[1], 10);
-    return ((months - AXIS_START) / SPAN) * 100;
+    if (months <= AXIS_KNEE) {
+      return ((months - AXIS_START) / (AXIS_KNEE - AXIS_START)) * KNEE_PCT;
+    }
+    return KNEE_PCT +
+      ((months - AXIS_KNEE) / (AXIS_END - AXIS_KNEE)) * (100 - KNEE_PCT);
   }
 
   /* Year ticks under the line */
-  [2024, 2025, 2026].forEach(function (year) {
+  [2022, 2023, 2024, 2025, 2026].forEach(function (year) {
     var mark = document.createElement('span');
     mark.className = 'tl-year';
     mark.style.left = pct(year + '-01') + '%';
@@ -1379,8 +1441,7 @@
   function showTip(node) {
     tipWhat.textContent = node.dataset.what;
     tipWhere.textContent = node.dataset.where;
-    tipJump.textContent = (node.classList.contains('tl-mini') ? 'Jump to project'
-                                                             : 'Jump to role') + ' ↓';
+    tipJump.textContent = 'Jump to ' + nounFor(targetFor(node.dataset.key)) + ' ↓';
     tip.dataset.show = 'true';
 
     /* All positions are worked out in .timeline coordinates from bounding
@@ -1427,7 +1488,7 @@
 
   /* Jump to the matching entry further down the page and mark where you landed */
   function jumpTo(key) {
-    var target = document.querySelector('.role[data-key="' + key + '"], .project[data-key="' + key + '"]');
+    var target = targetFor(key);
     if (!target) return;
     target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
 
