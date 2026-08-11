@@ -5,15 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- ═══════════════════════════════════════════════════════════════
      HOW TO EDIT THIS FILE
-     1. Search for text in [square brackets] and replace it with
-        your own details (name, research, links, etc.).
-     2. To add a publication, copy one <li class="pub"> block and
-        edit it.
-     3. To link your CV, put a file named cv.pdf in the same folder
-        as this file (or change the href on the "Download CV" link).
+     1. Search for text in [square brackets] — those are the few
+        details I didn't have (GitHub / LinkedIn / Scholar URLs).
+     2. To add a publication, copy one <li class="pub"> block.
+     3. To add a role, copy one <li class="role"> block.
+     4. The "Download CV" link points at "Eric Chen Resume.pdf" in
+        this same folder.
+     5. Links off this page open in a new tab — the script at the
+        bottom sets that, so there's no target="_blank" to remember.
      ═══════════════════════════════════════════════════════════════ -->
-<title>[Your Name] — Researcher</title>
-<meta name="description" content="Personal website of [Your Name]: research, publications, CV, and interests.">
+<title>Eric Chen — CS &amp; Math at Stanford</title>
+<meta name="description" content="Eric Chen — computer science and mathematics at Stanford. Research on mathematical reasoning in language models: benchmarks, LLM judges, and evaluation.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,11 +31,13 @@
     --note:   #7A8578;   /* margin-note gray-green */
     --serif:  "Newsreader", Georgia, serif;
     --mono:   "IBM Plex Mono", ui-monospace, monospace;
+    --nav-h:  66px;      /* height of the sticky nav; anchors offset by this */
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
+  /* scroll-padding keeps anchor jumps from landing under the sticky nav */
+  html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     * { animation: none !important; transition: none !important; }
@@ -63,6 +67,10 @@
 
   /* ── Top navigation ─────────────────────────────── */
   nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--paper);
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -73,17 +81,47 @@
     letter-spacing: 0.04em;
   }
   nav .brand { color: var(--ink); text-decoration: none; font-weight: 500; }
-  nav ul { display: flex; gap: 1.4rem; list-style: none; }
+  nav ul { display: flex; gap: 1.4rem; list-style: none; flex-wrap: wrap; }
   nav ul a { color: var(--muted); text-decoration: none; }
   nav ul a:hover { color: var(--accent); }
 
   /* ── Header / hero ──────────────────────────────── */
   header.hero { padding: 5rem 0 3.5rem; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3.5rem;
+    align-items: start;
+  }
   .hero h1 {
-    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    font-size: clamp(2.4rem, 5vw, 3.7rem);
     font-weight: 400;
     line-height: 1.05;
     letter-spacing: -0.015em;
+  }
+
+  /* ── Portrait ───────────────────────────────────── */
+  .portrait {
+    width: 240px;
+    height: 240px;          /* must match width — it's a circle */
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    flex: none;
+    /* hairline on the photo, a paper gap, then a teal ring */
+    box-shadow:
+      0 0 0 1px var(--rule),
+      0 0 0 9px var(--paper),
+      0 0 0 10px rgba(31, 111, 107, 0.4);
+  }
+  /* The photo is full-body, so it's zoomed and panned onto the face.
+     width = zoom (100% would fit the frame); left/top = pan.       */
+  .portrait img {
+    position: absolute;
+    width: 220%;
+    left: -67%;
+    top: -71%;
+    display: block;
   }
   .hero h1 em { font-style: italic; color: var(--accent); }
   .keywords {
@@ -130,41 +168,405 @@
     border-left: 2px solid var(--rule);
     padding-left: 1rem;
     position: sticky;
-    top: 2rem;
+    top: calc(var(--nav-h) + 2rem);   /* clear the sticky nav */
   }
   .sidenote strong { color: var(--ink); font-weight: 500; }
 
   .cols p + p { margin-top: 1.1rem; }
 
   /* ── Publications ───────────────────────────────── */
-  ul.pubs { list-style: none; margin-top: 0.5rem; }
+  ul.pubs { list-style: none; margin-top: 2rem; }
   .pub {
     display: grid;
     grid-template-columns: 4.5rem 1fr;
     gap: 1.2rem;
-    padding: 1.1rem 0;
-    border-bottom: 1px dashed var(--rule);
+    padding: 1.3rem 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
   }
   .pub:last-child { border-bottom: none; }
+  /* A rule that appears in the margin on hover, like a pencil mark */
+  .pub::before {
+    content: "";
+    position: absolute;
+    left: -1.1rem;
+    top: 1.4rem;
+    bottom: 1.4rem;
+    width: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .pub:hover::before { opacity: 1; }
   .pub .year {
     font-family: var(--mono);
     font-size: 0.8rem;
     color: var(--muted);
-    padding-top: 0.3rem;
+    padding-top: 0.35rem;
+    transition: color 0.15s ease;
   }
-  .pub .title { font-size: 1.05rem; font-weight: 500; }
+  .pub:hover .year { color: var(--accent); }
+  .pub .title { font-size: 1.1rem; font-weight: 500; line-height: 1.35; }
+  .pub .title a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .pub:hover .title a { color: var(--accent); }
   .pub .venue {
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.3rem;
+  }
+  /* NB: not .role — that class is taken by the experience timeline below */
+  .pub .venue .byline {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pub .venue .byline::after { content: " · "; color: var(--rule); }
+  /* Links as small chips, so there's an obvious thing to click */
+  .pub .links, .project .links {
+    margin-top: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .pub .links a, .project .links a {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.22rem 0.6rem;
+    background: #FCFDFB;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .pub .links a:hover, .project .links a:hover {
+    color: var(--paper);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* The "Abstract" chip is a button, so it has to be re-styled to match
+     the anchor chips next to it. */
+  .pub .links button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.22rem 0.6rem;
+    background: #FCFDFB;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .pub .links button:hover {
+    color: var(--paper);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  /* Small caret that flips when the panel is open */
+  .pub .links button .caret {
+    display: block;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-0.1em) rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+  .pub .links button[aria-expanded="true"] .caret {
+    transform: translateY(0.05em) rotate(-135deg);
+  }
+  .pub .links button[aria-expanded="true"] {
+    color: var(--paper);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ── Expandable abstracts ───────────────────────── */
+  /* 0fr → 1fr on a grid row is the height-agnostic way to animate open. */
+  .abstract {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s ease, margin-top 0.28s ease;
+    margin-top: 0;
+  }
+  .abstract > div { overflow: hidden; visibility: hidden; }
+  .pub[data-open="true"] .abstract {
+    grid-template-rows: 1fr;
+    margin-top: 0.9rem;
+  }
+  .pub[data-open="true"] .abstract > div { visibility: visible; }
+  .abstract p {
+    border-left: 2px solid var(--accent);
+    padding: 0.15rem 0 0.15rem 1rem;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 40em;
+  }
+
+  /* ── Logo timeline ──────────────────────────────── */
+  /* One line, one bead per role, positioned by date. Add a role by copying a
+     .tl-node button and setting data-at="YYYY-MM" — JS does the placement. */
+  .timeline { margin: 0; position: relative; }
+  .tl-scroll { overflow-x: auto; overflow-y: visible; scrollbar-width: thin; }
+  .tl-inner {
+    position: relative;
+    min-width: 700px;
+    height: 204px;
+    margin: 0 1.6rem;   /* room for the first and last bead */
+  }
+  .tl-line {
+    position: absolute;
+    left: 0; right: 0; top: 142px;
+    height: 1px;
+    background: var(--rule);
+  }
+  /* Line thickens across the years actually worked */
+  .tl-line::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: -0.5px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(31,111,107,0.35) 8%, rgba(31,111,107,0.35) 96%, transparent);
+  }
+  .tl-year {
+    position: absolute;
+    top: 180px;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+  .tl-year::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: -9px;
+    width: 1px; height: 6px;
+    background: var(--rule);
+  }
+
+  /* ── Beads ──────────────────────────────────────── */
+  .tl-node {
+    position: absolute;
+    top: 142px;
+    transform: translate(-50%, -50%);
+    width: 46px; height: 46px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--paper);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    /* same hairline-gap-ring treatment as the portrait */
+    box-shadow:
+      0 0 0 1px var(--rule),
+      0 0 0 4px var(--paper);
+    transition: box-shadow 0.18s ease, transform 0.18s ease;
+  }
+  .tl-node:hover, .tl-node.is-active {
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 0 0 4px var(--paper),
+      0 0 0 5px rgba(31, 111, 107, 0.4);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  .tl-node img {
+    width: 30px; height: 30px;
+    object-fit: contain;
+    display: block;
+  }
+  /* .tl-node img sets display:block, which would otherwise beat [hidden] */
+  .tl-node img[hidden] { display: none; }
+  /* Shown only if the logo file is missing, so the page never looks broken */
+  .tl-fallback {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+
+  /* ── Minor ticks ────────────────────────────────── */
+  /* Class projects hang above the line on a dotted stem, so they read as
+     secondary to the logo beads without needing a second row. No labels —
+     what each one is lives in the hover card, same as a bead. */
+  .tl-mini {
+    position: absolute;
+    bottom: 62px;        /* .tl-inner height (204) − the line's top (142) */
+    transform: translateX(-50%);
+    height: 48px;
+    width: 22px;         /* a bare 7px dot is too small to aim at */
+    padding: 0;
+    border: 0;
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+  .mini-dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    margin-bottom: 0.15rem;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 0 0 1.5px var(--note);
+    transition: background 0.18s ease, box-shadow 0.18s ease;
+  }
+  /* A column of dots rather than a dotted border — this way the dot size and
+     the gap between them are both adjustable. */
+  .mini-stem {
+    flex: 1;
+    width: 1px;
+    background-image: linear-gradient(var(--note) 45%, transparent 0);
+    background-size: 1px 4px;
+  }
+  .tl-mini:hover .mini-dot,
+  .tl-mini.is-active .mini-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 4px rgba(31, 111, 107, 0.18);
+  }
+  .tl-mini:hover .mini-stem,
+  .tl-mini.is-active .mini-stem {
+    background-image: linear-gradient(rgba(31, 111, 107, 0.75) 45%, transparent 0);
+  }
+
+  /* ── Hover card ─────────────────────────────────── */
+  .tl-tip {
+    position: absolute;
+    z-index: 4;
+    width: max-content;
+    max-width: 20rem;
+    background: #FCFDFB;
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--accent);
+    border-radius: 3px;
+    padding: 0.6rem 0.85rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.16s ease;
+  }
+  .tl-tip[data-show="true"] { opacity: 1; }
+  .tl-tip .tip-what { font-size: 0.95rem; font-weight: 500; line-height: 1.3; }
+  .tl-tip .tip-where {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+  .tl-tip .tip-jump {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--rule);
+  }
+  /* On touch there's no hover, so the hint itself has to be tappable */
+  .timeline[data-touch="true"] .tl-tip { pointer-events: auto; }
+  .timeline[data-touch="true"] .tl-tip .tip-jump { cursor: pointer; }
+
+  /* Landing highlight after a jump, so it's obvious where you ended up */
+  .role { scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+  .role.is-target::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 5px rgba(31, 111, 107, 0.18);
+  }
+  .role.is-target .what { color: var(--accent); }
+  /* Same idea for the project cards a minor tick jumps to — a card can't grow
+     a margin rule, so it lights up its own border instead. */
+  .project {
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .project.is-active, .project.is-target {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(31, 111, 107, 0.12);
+  }
+  .project.is-target h3 { color: var(--accent); }
+
+  /* ── Experience timeline ────────────────────────── */
+  /* The rail is a single line down the whole list; each role pins a dot to
+     it. Roles still running get a filled dot. */
+  ul.roles {
+    list-style: none;
+    position: relative;
+    padding-left: 1.6rem;
+  }
+  ul.roles::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 1.9rem;
+    bottom: 1.9rem;
+    width: 1px;
+    background: var(--rule);
+  }
+  .role {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1.6rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px dashed var(--rule);
+    position: relative;
+  }
+  .role:last-child { border-bottom: none; }
+  .role::before {
+    content: "";
+    position: absolute;
+    left: -1.6rem;
+    top: 1.85rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 0 0 1.5px var(--rule);
+    transition: box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .role.current::before { background: var(--accent); box-shadow: 0 0 0 1.5px var(--accent); }
+  .role.is-active::before { background: var(--accent); box-shadow: 0 0 0 1.5px var(--accent); }
+  .role.is-active .when { color: var(--accent); }
+  .role .when {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-top: 0.35rem;
+    transition: color 0.15s ease;
+  }
+  .role .what { font-size: 1.05rem; font-weight: 500; }
+  .role .where {
     font-size: 0.92rem;
     color: var(--muted);
     font-style: italic;
     margin-top: 0.15rem;
   }
-  .pub .links {
-    margin-top: 0.35rem;
-    font-family: var(--mono);
-    font-size: 0.75rem;
+  .role .detail {
+    margin-top: 0.55rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 44em;
   }
-  .pub .links a { margin-right: 0.9rem; }
 
   /* ── CV section ─────────────────────────────────── */
   .cv-grid {
@@ -218,20 +620,75 @@
   .interest h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.4rem; }
   .interest p { font-size: 0.95rem; color: var(--muted); line-height: 1.55; }
 
-  /* ── Footer / contact ───────────────────────────── */
-  footer {
-    border-top: 1px solid var(--rule);
-    padding: 3rem 0 4rem;
+  /* ── Projects ───────────────────────────────────── */
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    /* Cards size to their own content — stretching a one-bullet card to match
+       a three-bullet one leaves a lot of dead space. */
+    align-items: start;
   }
-  footer .contact {
+  .project {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.4rem 1.5rem;
+    background: #FCFDFB;
+    display: flex;
+    flex-direction: column;
+  }
+  .project h3 { font-size: 1.05rem; font-weight: 500; }
+  .project .meta {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+  .project p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-top: 0.7rem;
+  }
+  .project ul { list-style: none; margin-top: 0.8rem; }
+  .project li {
+    position: relative;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  /* A hairline dash instead of a bullet, to match the rules used elsewhere */
+  .project li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 7px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.55;
+  }
+  /* Chips sit on the bottom edge so cards of different lengths still line up */
+  .project .links { margin-top: auto; padding-top: 0.9rem; }
+
+  /* ── Contact ────────────────────────────────────── */
+  .contact {
     font-family: var(--mono);
     font-size: 0.85rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1.6rem;
   }
+
+  /* ── Footer ─────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2.5rem 0 3.5rem;
+  }
   footer .fine {
-    margin-top: 2.5rem;
     font-family: var(--mono);
     font-size: 0.72rem;
     color: var(--muted);
@@ -241,8 +698,43 @@
   @media (max-width: 760px) {
     .cols { grid-template-columns: 1fr; gap: 1.5rem; }
     .sidenote { position: static; }
-    nav ul { gap: 1rem; }
+    /* Tight enough that six links stay on one row under the brand — a sticky
+       bar shouldn't eat the screen. --nav-h must match the rendered height. */
+    :root { --nav-h: 72px; }
+    nav {
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      padding: 0.85rem 0;
+      font-size: 0.68rem;
+    }
+    nav .brand { white-space: nowrap; }
+    /* Six links won't fit one row on a phone, and a three-row sticky bar eats
+       the screen — so the row scrolls sideways instead of wrapping. */
+    nav ul {
+      gap: 0.95rem;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      width: 100%;
+    }
+    nav ul::-webkit-scrollbar { display: none; }
+    nav ul li { flex: none; }
     header.hero { padding: 3.5rem 0 2.5rem; }
+    /* Photo first, then the text */
+    .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; justify-items: center; }
+    .hero-grid > div:last-child { order: -1; }
+    .hero h1, .hero .keywords, .hero .lede { text-align: left; }
+    .portrait { width: 170px; height: 170px; }
+    .role { grid-template-columns: 1fr; gap: 0.4rem; }
+    .role .when { padding-top: 0; }
+    .role::before { top: 1.75rem; }
+    ul.roles { padding-left: 1.2rem; }
+    .role::before { left: -1.2rem; }
+    .tl-inner { margin: 0 1.2rem; }
+    .tl-tip { max-width: 15rem; }
+    /* Narrow screens scroll the line sideways rather than crushing it */
+    .tl-scroll { margin: 0 -1.5rem; padding: 0 1.5rem; }
+    .pub { grid-template-columns: 3.2rem 1fr; gap: 0.9rem; }
   }
 </style>
 </head>
@@ -251,70 +743,421 @@
 <div class="wrap">
 
   <nav aria-label="Main">
-    <a class="brand" href="#top">[Y. Name]</a>
+    <a class="brand" href="#top">E. H. Chen</a>
     <ul>
+      <li><a href="#contact">Contact</a></li>
       <li><a href="#research">Research</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#cv">CV</a></li>
       <li><a href="#interests">Interests</a></li>
-      <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
 
-  <!-- ══ HERO — your name and one-line pitch ══ -->
+  <!-- ══ HERO ══ -->
   <header class="hero" id="top">
-    <h1>[Your Name],<br>studying <em>[your research area]</em>.</h1>
-    <p class="keywords">
-      <span>[keyword one]</span><span>[keyword two]</span><span>[keyword three]</span><span>[institution]</span>
-    </p>
-    <p class="lede">
-      [Two or three sentences about who you are: your role, your institution,
-      and the question that drives your research. Keep it human — this is the
-      first thing visitors read.]
-    </p>
+    <div class="hero-grid">
+      <div>
+        <h1>Eric Chen</h1>
+        <p class="lede">
+          I'm an undergraduate and coterminal master's student at Stanford, studying
+          computer science and mathematics. I do research in the <a href="https://stairlab.stanford.edu/">Stanford Trustworthy AI Research</a> lab under Professor <a href="https://cs.stanford.edu/~sanmi/">Sanmi Koyejo</a>.
+        </p>
+        <p class="lede">
+          I'm generally interested in LLMs, reasoning, evaluation, and benchmarking. Please feel free to reach out!
+        </p>
+      </div>
+
+      <div>
+        <div class="portrait">
+          <img src="pic_carmel.jpg" alt="Portrait of Eric Chen.">
+        </div>
+      </div>
+    </div>
   </header>
+
+  <!-- ══ CONTACT ══ -->
+  <section id="contact">
+    <p class="eyebrow">Contact</p>
+    <div class="contact">
+      <a href="mailto:erichchen@stanford.edu">erichchen@stanford.edu</a>
+      <!-- Replace the # below with your real profile URLs -->
+      <a href="https://scholar.google.com/citations?user=tlIogAYAAAAJ&hl=en">Google Scholar</a>
+      <a href="https://github.com/eric-h-chen">GitHub</a>
+      <a href="https://www.linkedin.com/in/eric-c-a8b3302a5/">LinkedIn</a>
+    </div>
+  </section>
+
+  <!-- ══ TIMELINE ══ -->
+  <!-- Beads are placed by data-at (the start date); JS does the math, so you
+       never hand-tune positions. Clicking one jumps to the matching entry in
+       Experience — its data-key must match that <li>'s data-key exactly.
+       Smaller class projects ride the same line as .tl-mini ticks, on dotted
+       stems, and jump to the matching card in Projects instead.
+
+       Only dates inside AXIS_START..AXIS_END (in the script at the bottom)
+       land on the track — widen those two constants to reach further back.
+
+       Drop logo files (square, transparent PNG or SVG) into a "logos" folder
+       next to this file:
+           logos/putnam-axiom.png   logos/sail.png
+           logos/roblox.png         logos/hrt.png
+       Until a file exists the bead shows initials instead.              -->
+  <section id="path" aria-label="Timeline of roles and class projects">
+    <div class="timeline" id="timeline" hidden>
+      <div class="tl-scroll">
+        <div class="tl-inner" id="tlInner">
+          <div class="tl-line"></div>
+          <button type="button" class="tl-node" data-key="putnam" data-at="2024-01"
+                  data-what="First author, Putnam-AXIOM" data-where="Stanford AI Lab &amp; CURIS · Jan 2024 – July 2025" aria-describedby="tlTip">
+            <img src="logos/putnam-axiom.png" alt="Putnam-AXIOM">
+            <span class="tl-fallback" hidden>P-AX</span>
+          </button>
+          <button type="button" class="tl-node" data-key="roblox" data-at="2025-06"
+                  data-what="ML &amp; Software Engineer Intern" data-where="Roblox · June – Sept 2025" aria-describedby="tlTip">
+            <img src="logos/roblox.png" alt="Roblox">
+            <span class="tl-fallback" hidden>RBLX</span>
+          </button>
+          <button type="button" class="tl-node" data-key="sail" data-at="2025-10"
+                  data-what="Lead author, LLM judges for mathematics" data-where="Stanford AI Lab · Oct 2025 – present" aria-describedby="tlTip">
+            <img src="logos/sail.png" alt="Stanford Artificial Intelligence Laboratory">
+            <span class="tl-fallback" hidden>SAIL</span>
+          </button>
+          <button type="button" class="tl-node" data-key="hrt" data-at="2026-05"
+                  data-what="Algorithm Developer Intern" data-where="Hudson River Trading · May – Aug 2026" aria-describedby="tlTip">
+            <img src="logos/hrt.png" alt="Hudson River Trading">
+            <span class="tl-fallback" hidden>HRT</span>
+          </button>
+
+          <!-- Minor ticks: class projects. Same data-at placement as a bead;
+               data-key must match a .project's data-key down in Projects. -->
+          <button type="button" class="tl-mini" data-key="cs231n" data-at="2024-04"
+                  data-what="Self-driving perception models" data-where="CS 231N · Apr – June 2024" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="cs229" data-at="2024-09"
+                  data-what="IGPT: Imitation Game Personal Texter" data-where="CS 229 · Sept – Dec 2024" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="cs224r" data-at="2025-04"
+                  data-what="AlphaZero-style Gomoku agent" data-where="CS 224R · Apr – June 2025" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+        </div>
+      </div>
+      <div class="tl-tip" id="tlTip" role="tooltip">
+        <div class="tip-what"></div>
+        <div class="tip-where"></div>
+        <div class="tip-jump">Jump to role &darr;</div>
+      </div>
+    </div>
+  </section>
 
   <!-- ══ RESEARCH ══ -->
   <section id="research">
     <p class="eyebrow">Research</p>
     <div class="cols">
       <div>
-        <p>
-          [A paragraph describing your main line of research. What problem are
-          you working on, why does it matter, and what's your angle on it?]
+        <!-- <p>
+          Most math benchmarks go stale the moment they're published — the problems
+          leak into training data, and a rising score stops meaning a rising ability.
+          With <strong>Putnam-AXIOM</strong> I took 522 Putnam competition problems and
+          built functional variations of them: same underlying reasoning, freshly
+          generated surface form, so the benchmark can be resampled indefinitely
+          instead of memorized.
         </p>
         <p>
-          [A second paragraph for methods, collaborations, or current projects.
-          Delete it if one paragraph is enough.]
-        </p>
+          The other half of the problem is the grader. If an LLM judge is scoring
+          free-form mathematical proofs, its errors quietly become your results. I lead
+          a four-person team at SAIL — an undergrad, a Ph.D. student, a postdoc, and a
+          professor — studying how chain-of-thought and multi-step pipelines change
+          judge reliability. We ran thirteen judge configurations across five LLMs with
+          batched vLLM inference on H200/B200 GPUs, and built a 500-problem,
+          human-graded benchmark with analytic rubrics to measure the judges against.
+        </p> -->
 
         <ul class="pubs">
-          <!-- Copy this <li> block to add more publications -->
           <li class="pub">
             <div class="year">2026</div>
             <div>
-              <div class="title">[Title of your most recent paper]</div>
-              <div class="venue">[Journal or Conference Name]. With [Co-author A] and [Co-author B].</div>
-              <div class="links"><a href="#">PDF</a><a href="#">DOI</a><a href="#">Code</a></div>
+              <div class="title"><a href="https://openreview.net/pdf?id=MDArMFusA7">Mixture of Graders: Adaptive Strategy Routing for LLM-Based Mathematical Evaluation</a></div>
+              <div class="venue"><span class="byline">Lead author</span>To appear at ICML 2026 (AI4MATH).</div>
+              <div class="links">
+                <a href="https://openreview.net/pdf?id=MDArMFusA7">PDF</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                LLM judges are promising for evaluating reasoned mathematical solutions, yet their
+                scores remain prompt-sensitive and unstable. We evaluate 13 grading strategies on
+                Putnam-AXIOM-Grading, a new 500-problem benchmark with 1,000 mathematically
+                annotated candidate solutions, and IMO-GradingBench. The strategies span direct
+                scoring, structured chain-of-thought, and multi-call pipelines such as G-Eval,
+                Chain-of-Verification, and Debate. No fixed strategy dominates, and the strongest
+                single default, comparative prompting, wins only on average. In hindsight, the best
+                strategy per problem differs from the best fixed default in 76% of cases, revealing
+                substantial oracle headroom for adaptive selection. Motivated by this, we train
+                Mixture of Graders, a ModernBERT-large strategy router, using the fixed-strategy
+                score matrix and human labels, then deploy it using only problem and reference
+                features. On Putnam-AXIOM-Grading, MoG improves over the best fixed strategy across
+                all open-weight judge models, with relative MSE reductions up to 27.8% across both
+                Qwen2.5-72B-Math-Instruct and Mistral-Large-Instruct-2411 student responses. It
+                also generalizes across students, with a router trained on Qwen responses
+                outperforming the best fixed default on Mistral responses. The prescription for
+                difficult mathematical grading is not a single best prompt, but a learned mixture
+                over grader strategies.
+              </p></div></div>
+            </div>
+          </li>
+          <li class="pub">
+            <div class="year">2026</div>
+            <div>
+              <div class="title"><a href="https://openreview.net/pdf?id=vdXPorr099">Rethinking LLM Judges: Chain-of-Thought and Multi-Step Pipelines for Math Grading</a></div>
+              <div class="venue"><span class="byline">Lead author</span>To appear at ICLR 2026 (LLM Reasoning).</div>
+              <div class="links">
+                <a href="https://openreview.net/pdf?id=vdXPorr099">PDF</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                LLM judges are a promising way to evaluate reasoned mathematical solutions, but
+                their scores are prompt-sensitive, unstable and hard to interpret. We challenge two
+                prevailing assumptions: that chain-of-thought adds little to agreement with human
+                grades, and that multi-step pipelines such as debate or ensembles beat single-step
+                evaluation. On two human-graded competition-mathematics benchmarks, unconstrained
+                chain-of-thought tends to hurt evaluation consistency without moving performance
+                much, while deliberately structured chain-of-thought recovers and often improves
+                agreement — and comparative prompting, a single pass that weighs a solution against
+                a reference, consistently beats the multi-step pipelines.
+              </p></div></div>
             </div>
           </li>
           <li class="pub">
             <div class="year">2025</div>
             <div>
-              <div class="title">[Title of an earlier paper]</div>
-              <div class="venue">[Journal or Conference Name].</div>
-              <div class="links"><a href="#">PDF</a><a href="#">DOI</a></div>
+              <div class="title"><a href="https://arxiv.org/abs/2508.08292">Putnam-AXIOM: A Functional and Static Benchmark for Measuring Higher Level Mathematical Reasoning</a></div>
+              <div class="venue"><span class="byline">First author</span>ICML 2025 and NeurIPS 2024 (MATH-AI). Featured on Hacker News.</div>
+              <div class="links">
+                <a href="https://arxiv.org/abs/2508.08292">arXiv</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                Existing mathematical reasoning benchmarks are nearing saturation, with some
+                models clearing 90%, and are increasingly compromised by training-set
+                contamination. Putnam-AXIOM pairs 522 university-level Putnam competition
+                problems with a companion set of 100 functional variants, produced by
+                programmatically perturbing variables and constants — a protocol that yields an
+                endless supply of equally hard, unseen instances. OpenAI's o1-preview, the
+                strongest model tested, scores 41.9% on the original set but loses 19.6 points on
+                the paired variations; the other eighteen models all decline the same way, ten of
+                them with non-overlapping 95% confidence intervals.
+              </p></div></div>
+            </div>
+          </li>
+          <li class="pub">
+            <div class="year">2024</div>
+            <div>
+              <div class="title"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0047248424000034">Using Machine Learning on New Feature Sets Extracted From 3D Models of Broken Animal Bones</a></div>
+              <div class="venue">Journal of Human Evolution, vol. 187. With AMAAZE, University of Minnesota.</div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0047248424000034">Journal</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                Telling apart the agents that modified bone at paleoanthropological sites underpins
+                much of what we can say about how early hominins exploited large animals. Fracture
+                pattern analysis has struggled with equifinality, and researchers dispute the
+                replicability of existing methods. We present a new approach that extracts a far
+                richer and more transparent feature set from 3D models of fragmentary bone, then
+                applies supervised machine learning to separate hominin breakage from carnivore
+                breakage, averaging around 77% accuracy across tests.
+              </p></div></div>
+            </div>
+          </li>
+          <li class="pub">
+            <div class="year">2023</div>
+            <div>
+              <div class="title"><a href="https://math.mit.edu/research/highschool/primes/materials/2022/Chen-Zitzewitz.pdf">Unitary Conditions for Lamé and Heun Differential Operators</a></div>
+              <div class="venue">Joint Mathematics Meetings 2023; published by the MIT Mathematics Department. From MIT PRIMES-USA.</div>
+              <div class="links">
+                <a href="https://math.mit.edu/research/highschool/primes/materials/2022/Chen-Zitzewitz.pdf">PDF</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                We investigate how the accessory parameter of the Heun equation relates to the
+                properties of its monodromy groups, asking specifically which values of that
+                parameter produce unitary groups — ones preserving a Hermitian inner product.
+                Extending earlier work on the Lamé equation, we prove for a broad class of Heun
+                equations that unitarity is tied to the traces of certain monodromy matrices, and
+                turn that theorem into an algorithm for locating the accessory parameters that
+                yield unitary monodromy. We report the values found, draw convergence maps showing
+                the algorithm is robust, and derive an asymptotic formula matching the numerics.
+              </p></div></div>
+            </div>
+          </li>
+          <li class="pub">
+            <div class="year">2023</div>
+            <div>
+              <div class="title"><a href="https://docs.google.com/presentation/d/1dNWLKaB_HyeP7CYZbnSLDJueCkSHKQdRepdJFpM91VI/edit?usp=sharing">Coarse Graining to Expedite Molecular Dynamics Simulations of Solvated Fibrinogen</a></div>
+              <div class="venue">Oral Presentation at the Materials Research Society, Fall 2023 Meeting. From the Garcia Research Program, Stony Brook University.</div>
+              <div class="links">
+                <a href="https://docs.google.com/presentation/d/1dNWLKaB_HyeP7CYZbnSLDJueCkSHKQdRepdJFpM91VI/edit?usp=sharing">Slides</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                Simulating fibrinogen in solvent atom by atom is prohibitively slow. We built a coarse-grained representation that groups atoms into larger interaction sites, cutting simulation cost while keeping the structural behavior that matters for how the protein folds and binds.
+              </p></div></div>
             </div>
           </li>
         </ul>
       </div>
 
-      <!-- The margin column: a small aside, like a note in a book margin -->
-      <aside class="sidenote">
-        <strong>Currently:</strong> [what you're working on right now — a paper
-        under review, a new dataset, a grant]. <br><br>
-        For the full list of publications, see my
-        <a href="#">[Google Scholar]</a> profile.
-      </aside>
+      <!-- <aside class="sidenote">
+        <strong>Currently:</strong> wrapping up a quant research internship at Hudson
+        River Trading, and continuing the LLM-judge work at SAIL.
+        <br><br>
+        <strong>Service:</strong> reviewer for the ICML AI4MATH 2025 and NeurIPS MATH-AI
+        2025 workshops.
+        <br><br>
+        Advised by and collaborating with Prof. Sanmi Koyejo; deep RL work supervised by
+        Prof. Chelsea Finn.
+      </aside> -->
+    </div>
+  </section>
+
+  <!-- ══ EXPERIENCE ══ -->
+  <section id="experience">
+    <p class="eyebrow">Experience</p>
+
+    <ul class="roles">
+      <li class="role" data-key="hrt">
+        <div class="when">May – Aug 2026</div>
+        <div>
+          <div class="what">Algorithm Developer (Quant Researcher) Intern</div>
+          <div class="where">Hudson River Trading · New York, NY</div>
+          <p class="detail">
+            Trained equity return prediction models on high-frequency market data,
+            owning the work end to end — ingestion, features, training and validation.
+            Evaluated an alternative equity dataset and engineered features from it to
+            improve daily return predictions.
+          </p>
+        </div>
+      </li>
+      <li class="role current" data-key="sail">
+        <div class="when">Oct 2025 – present</div>
+        <div>
+          <div class="what">Machine Learning Researcher — LLM judges for mathematics</div>
+          <div class="where">Stanford Artificial Intelligence Laboratory (SAIL) · Stanford, CA</div>
+          <p class="detail">
+            Sole first author. Designed and ran thirteen judge prompting experiments
+            across five LLMs using vLLM with batched inference on H200/B200 GPUs. Built
+            a 500-problem human-graded benchmark with analytic rubrics and analyzed
+            correlation and variance metrics in SciPy. Recruited and led a team of four
+            spanning undergrad through professor; published at ICLR (LLM Reasoning).
+          </p>
+        </div>
+      </li>
+      <li class="role" data-key="roblox">
+        <div class="when">June – Sept 2025</div>
+        <div>
+          <div class="what">Machine Learning &amp; Software Engineer Intern</div>
+          <div class="where">Roblox · San Mateo, CA</div>
+          <p class="detail">
+            Designed and productionized transformer and set-transformer models that
+            embed and aggregate collections of user data. Deployed to production at
+            scale on Airflow, Kafka, Hive, Spark, AWS S3 and Kubeflow, increasing
+            alt-account detection precision 2× to 92% and enabling enforcement against
+            high-priority bad actors.
+          </p>
+        </div>
+      </li>
+      <li class="role" data-key="putnam">
+        <div class="when">Jan 2024 – July 2025</div>
+        <div>
+          <div class="what">Machine Learning Researcher — Putnam-AXIOM</div>
+          <div class="where">Stanford AI Laboratory &amp; CURIS · Stanford, CA</div>
+          <p class="detail">
+            First author. Extracted and varied competition problems to build
+            Putnam-AXIOM, a 522-problem benchmark for higher-level mathematical
+            reasoning. Evaluated and supervised fine-tuning (FT and PEFT) of Mistral-7B,
+            LLaMA-8B and DeepSeek on virtual GPUs. Spearheaded a team of peers in
+            collaboration with Prof. Sanmi Koyejo; published at ICML and NeurIPS
+            (MATH-AI track).
+          </p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ══ PROJECTS ══ -->
+  <!-- Coursework, research programs and side projects, newest first.
+       Copy a .project block to add one. -->
+  <section id="projects">
+    <p class="eyebrow">Projects</p>
+    <div class="projects">
+
+      <div class="project" data-key="cs224r">
+        <h3>AlphaZero-style Gomoku agent</h3>
+        <div class="meta">CS 224R · Prof. Chelsea Finn · Apr – June 2025</div>
+        <ul>
+          <li>Trained an agent by MCTS and self-play to a 100% win-or-tie rate against
+              human players.</li>
+          <li>Awarded extra credit by Prof. Finn for the model architecture and for the
+              PyTorch, GPU optimization and RL training work behind it.</li>
+        </ul>
+        <div class="links"><a href="sigmago.pdf">Paper</a></div>
+      </div>
+
+      <div class="project" data-key="cs229">
+        <h3>IGPT: Imitation Game Personal Texter</h3>
+        <div class="meta">CS 229 · Ng, Charikar &amp; Guestrin · Sept – Dec 2024</div>
+        <ul>
+          <li>Built a reply system that imitates one person's texting style, comparing
+              LoRA fine-tuning of Llama-2-7B against in-context learning with GPT-4o.</li>
+          <li>Scored both against three yardsticks: friends guessing which replies were
+              real, a Naive Bayes authorship classifier, and BERT embedding similarity.</li>
+          <li>Close friends did barely better than chance at spotting the machine, and
+              in-context learning beat fine-tuning on every measure.</li>
+        </ul>
+        <div class="links"><a href="IGPT.pdf">Paper</a></div>
+      </div>
+
+      <div class="project" data-key="cs231n">
+        <h3>Self-driving perception models</h3>
+        <div class="meta">CS 231N · Prof. Fei-Fei Li · Apr – June 2024</div>
+        <ul>
+          <li>Built road image classification (~100% accuracy) and road object detection
+              (~65% accuracy) models.</li>
+          <li>Wrote modular PyTorch implementations of MLPs, ConvNets and ResNets.</li>
+          <li>Worked with a team of peers on GitHub in a virtual AWS environment.</li>
+        </ul>
+        <div class="links"><a href="cs231n.pdf">Paper</a></div>
+      </div>
+
+      <div class="project">
+        <h3>Barcode Buddy</h3>
+        <div class="meta">JavaScript, React · 2023</div>
+        <ul>
+          <li>A camera scanner that reads a product barcode and returns its allergens and
+              nutrition information, built on a food-products API.</li>
+        </ul>
+        <div class="links"><a href="https://barcode-buddy.vercel.app">Live site</a></div>
+      </div>
+
+      <div class="project">
+        <h3>MIT PRIMES-USA</h3>
+        <div class="meta">Mathematics Researcher · Jan 2022 – May 2024</div>
+        <ul>
+          <li>Complex analysis research with a partner under Prof. Pavel Etingof and
+              mentor David Darrow.</li>
+          <li>Wrote gradient descent algorithms in Python and MATLAB to analyze Lamé and
+              Heun differential equations.</li>
+          <li>Built heat map and contour plot visualizations in MATLAB and Matplotlib.</li>
+        </ul>
+        <div class="links"><a href="https://math.mit.edu/research/highschool/primes/materials/2022/Chen-Zitzewitz.pdf">Paper</a></div>
+      </div>
+
     </div>
   </section>
 
@@ -322,66 +1165,278 @@
   <section id="cv">
     <p class="eyebrow">Curriculum Vitae</p>
     <div class="cv-grid">
-      <div class="cv-block">
+      <!-- <div class="cv-block">
         <h3>Education</h3>
         <ul>
-          <li>[PhD, Field] <span>[University], [year–year]</span></li>
-          <li>[MSc, Field] <span>[University], [year]</span></li>
-          <li>[BSc, Field] <span>[University], [year]</span></li>
+          <li>B.Sc. &amp; M.Sc., Computer Science <span>Stanford University, expected June 2027</span></li>
+          <li>B.Sc., Mathematics <span>Stanford University, expected June 2027</span></li>
+          <li>GPA 4.113 / 4.0</li>
         </ul>
       </div>
       <div class="cv-block">
-        <h3>Positions</h3>
+        <h3>Coursework</h3>
         <ul>
-          <li>[Current role] <span>[Institution], [year]–present</span></li>
-          <li>[Previous role] <span>[Institution], [years]</span></li>
+          <li>LLMs from Scratch (CS 336)</li>
+          <li>Deep RL · Statistical ML · NLP with Deep Learning</li>
+          <li>Real Analysis · Graduate Probability · Stochastic Processes</li>
+          <li>Convex Optimization · Regression &amp; ANOVA</li>
+          <li>Computer Organization &amp; Systems · Computer Vision</li>
         </ul>
       </div>
       <div class="cv-block">
-        <h3>Selected honors</h3>
+        <h3>Honors &amp; service</h3>
         <ul>
-          <li>[Award or fellowship] <span>[Granting body], [year]</span></li>
-          <li>[Award or fellowship] <span>[Granting body], [year]</span></li>
+          <li>Reviewer, ICML AI4MATH 2025 &amp; NeurIPS MATH-AI 2025 <span>Conference workshops</span></li>
+          <li>BASES Frosh Battalion <span>Stanford, 2023 — 30 of 500+ applicants (6%)</span></li>
+          <li>5th place, ACM Puzzle Hunt <span>Stanford, 2023 — of 200+ teams</span></li>
         </ul>
       </div>
+      <div class="cv-block">
+        <h3>Skills</h3>
+        <ul>
+          <li>Python, LaTeX <span>Mastery</span></li>
+          <li>C++, C <span>Proficient</span></li>
+          <li>Java, JavaScript <span>Intermediate</span></li>
+          <li>PyTorch, NumPy, Pandas, SciPy, SymPy, vLLM <span>Frameworks &amp; libraries</span></li>
+          <li>English, Mandarin (fluent); Spanish (intermediate) <span>Languages</span></li>
+        </ul>
+      </div> -->
     </div>
-    <!-- Put a file named cv.pdf next to this index.html for this link to work -->
-    <a class="btn" href="cv.pdf" download>Download full CV (PDF)</a>
+    <a class="btn" href="Eric%20Chen%20Resume.pdf" download>Download full CV (PDF)</a>
   </section>
 
   <!-- ══ PERSONAL INTERESTS ══ -->
   <section id="interests">
-    <p class="eyebrow">Beyond the research</p>
+    <p class="eyebrow">Non-serious stuff</p>
     <div class="interests">
       <div class="interest">
-        <h3>[Interest one, e.g. Hiking]</h3>
-        <p>[A sentence or two — a favorite trail, how long you've been at it,
-        why you love it.]</p>
+        <h3>Piano and singing</h3>
+        <p>I'm a big fan of pop, rap, C-pop, and classical music. I've played the piano since I was 5, and I'm a big fan of Chopin.</p>
       </div>
       <div class="interest">
-        <h3>[Interest two, e.g. Photography]</h3>
-        <p>[A sentence or two. You can link to a gallery or account here.]</p>
+        <h3>Cycling and the outdoors</h3>
+        <p>I love biking around Stanford campus and around Minnesota. I've also gotten into climbing and running.</p>
       </div>
       <div class="interest">
-        <h3>[Interest three, e.g. Cooking]</h3>
-        <p>[A sentence or two. Feel free to add or remove these cards.]</p>
+        <h3>Puzzles and games</h3>
+        <p>Escape rooms, board games, and video games. Kind of nerdy but I like it.</p>
       </div>
     </div>
   </section>
 
-  <!-- ══ CONTACT / FOOTER ══ -->
-  <footer id="contact">
-    <p class="eyebrow">Contact</p>
-    <div class="contact">
-      <a href="mailto:you@university.edu">you@university.edu</a>
-      <a href="#">[Google Scholar]</a>
-      <a href="#">[GitHub]</a>
-      <a href="#">[LinkedIn]</a>
-    </div>
-    <p class="fine">© 2026 [Your Name]. Built by hand with plain HTML &amp; CSS.</p>
+  <footer>
+    <p class="fine">© 2026 Eric Chen. Built by hand with plain HTML, CSS &amp; a little JavaScript. And claude :)</p>
   </footer>
 
 </div>
+
+<script>
+(function () {
+  /* ── Outbound links open in a new tab ──────────────────────────── */
+  /* Done here rather than by hand so a link added later can't forget it.
+     Skips the nav's in-page jumps, the mailto (which would leave a blank
+     tab behind), and the CV, which downloads instead of navigating. */
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    if (a.getAttribute('href').charAt(0) === '#') return;
+    if (a.protocol === 'mailto:' || a.hasAttribute('download')) return;
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+
+  /* ── Expandable abstracts ──────────────────────────────────────── */
+  document.querySelectorAll('.abstract-toggle').forEach(function (btn, i) {
+    var pub = btn.closest('.pub');
+    var panel = pub.querySelector('.abstract');
+    var id = 'abstract-' + (i + 1);
+    panel.id = id;
+    btn.setAttribute('aria-controls', id);
+    btn.setAttribute('aria-expanded', 'false');
+    pub.setAttribute('data-open', 'false');
+
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      pub.setAttribute('data-open', String(!open));
+    });
+  });
+
+  /* ── Logo timeline ─────────────────────────────────────── */
+  var tl = document.getElementById('timeline');
+  if (!tl) return;
+  var inner = document.getElementById('tlInner');
+  var scroller = tl.querySelector('.tl-scroll');
+  var nav = document.querySelector('nav');
+  var tip = document.getElementById('tlTip');
+  var tipWhat = tip.querySelector('.tip-what');
+  var tipWhere = tip.querySelector('.tip-where');
+  var tipJump = tip.querySelector('.tip-jump');
+  /* A role in Experience or a card in Projects — whatever a tick points at */
+  var TARGETS = '.role[data-key], .project[data-key]';
+
+  var AXIS_START = 2023 * 12 + 10;   // Oct 2023 — a little air before the first bead
+  var AXIS_END   = 2026 * 12 + 10;   // Oct 2026
+  var SPAN = AXIS_END - AXIS_START;
+
+  function pct(value) {
+    var p = value.split('-');
+    var months = parseInt(p[0], 10) * 12 + parseInt(p[1], 10);
+    return ((months - AXIS_START) / SPAN) * 100;
+  }
+
+  /* Year ticks under the line */
+  [2024, 2025, 2026].forEach(function (year) {
+    var mark = document.createElement('span');
+    mark.className = 'tl-year';
+    mark.style.left = pct(year + '-01') + '%';
+    mark.textContent = year;
+    inner.appendChild(mark);
+  });
+
+  /* Logo beads and the smaller class-project ticks are placed and hovered the
+     same way — they only differ in what they jump to. */
+  var beads = Array.prototype.slice.call(tl.querySelectorAll('.tl-node'));
+  var minis = Array.prototype.slice.call(tl.querySelectorAll('.tl-mini'));
+  var nodes = beads.concat(minis);
+
+  nodes.forEach(function (node) {
+    node.style.left = pct(node.dataset.at) + '%';
+  });
+
+  beads.forEach(function (node) {
+    /* Fall back to initials if the logo file isn't there yet */
+    var img = node.querySelector('img');
+    var fallback = node.querySelector('.tl-fallback');
+    img.addEventListener('error', function () {
+      img.hidden = true;
+      fallback.hidden = false;
+    });
+    if (img.complete && img.naturalWidth === 0) {
+      img.hidden = true;
+      fallback.hidden = false;
+    }
+  });
+
+  function showTip(node) {
+    tipWhat.textContent = node.dataset.what;
+    tipWhere.textContent = node.dataset.where;
+    tipJump.textContent = (node.classList.contains('tl-mini') ? 'Jump to project'
+                                                             : 'Jump to role') + ' ↓';
+    tip.dataset.show = 'true';
+
+    /* All positions are worked out in .timeline coordinates from bounding
+       rects, so the track's horizontal scroll and margins take care of
+       themselves. */
+    var base = tl.getBoundingClientRect();
+    var view = scroller.getBoundingClientRect();
+    var bead = node.getBoundingClientRect();
+    var w = tip.offsetWidth;
+    var h = tip.offsetHeight;
+
+    /* Keep the card inside the part of the track that's actually on screen */
+    var min = view.left - base.left;
+    var max = view.right - base.left - w;
+    var wanted = bead.left - base.left + bead.width / 2 - w / 2;
+    tip.style.left = Math.min(Math.max(wanted, min), Math.max(max, min)) + 'px';
+
+    /* Above the bead by default, below it if the sticky nav is in the way */
+    var navBottom = nav ? nav.getBoundingClientRect().bottom : 0;
+    var flip = (bead.top - navBottom) < (h + 14);
+    tip.style.top = (flip ? bead.bottom - base.top + 14
+                          : bead.top - base.top - h - 14) + 'px';
+
+    nodes.forEach(function (n) { n.classList.toggle('is-active', n === node); });
+    document.querySelectorAll(TARGETS).forEach(function (r) {
+      r.classList.toggle('is-active', r.dataset.key === node.dataset.key);
+    });
+  }
+
+  function hideTip() {
+    tip.dataset.show = 'false';
+    nodes.forEach(function (n) { n.classList.remove('is-active'); });
+    document.querySelectorAll(TARGETS).forEach(function (r) {
+      r.classList.remove('is-active');
+    });
+  }
+
+  /* Touch devices fire a synthetic mouseenter just before click, so binding
+     both would show the card and immediately hide it again. Pick one. */
+  var canHover = window.matchMedia('(hover: hover)').matches;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targetTimer;
+
+  /* Jump to the matching entry further down the page and mark where you landed */
+  function jumpTo(key) {
+    var target = document.querySelector('.role[data-key="' + key + '"], .project[data-key="' + key + '"]');
+    if (!target) return;
+    target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+
+    clearTimeout(targetTimer);
+    document.querySelectorAll('.is-target').forEach(function (r) {
+      r.classList.remove('is-target');
+    });
+    target.classList.add('is-target');
+    targetTimer = setTimeout(function () { target.classList.remove('is-target'); }, 2200);
+  }
+
+  nodes.forEach(function (node) {
+    /* The bead's job is the jump, so say that rather than reading the logo out */
+    var img = node.querySelector('img');
+    if (img) img.alt = '';
+    node.setAttribute('aria-label', 'Jump to ' + node.dataset.what + ', ' + node.dataset.where);
+
+    if (canHover) {
+      node.addEventListener('mouseenter', function () { showTip(node); });
+      node.addEventListener('mouseleave', hideTip);
+      /* keyboard equivalent of hover */
+      node.addEventListener('focus', function () { showTip(node); });
+      node.addEventListener('blur', hideTip);
+      node.addEventListener('click', function () { jumpTo(node.dataset.key); });
+    } else {
+      /* On touch, focus also fires before click — binding both would cancel out.
+         First tap opens the card, then "Jump to role" does the scroll. */
+      node.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (node.classList.contains('is-active')) { hideTip(); } else { showTip(node); }
+      });
+    }
+  });
+
+  if (!canHover) {
+    tl.dataset.touch = 'true';
+    tip.querySelector('.tip-jump').addEventListener('click', function () {
+      var active = nodes.filter(function (n) { return n.classList.contains('is-active'); })[0];
+      if (active) { jumpTo(active.dataset.key); hideTip(); }
+    });
+    /* Tapping anywhere else dismisses the card */
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.tl-node') && !e.target.closest('.tl-mini')
+          && !e.target.closest('.tl-tip')) hideTip();
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') hideTip();
+  });
+
+  scroller.addEventListener('scroll', hideTip);
+
+  /* Tapping a bead can make the browser scroll it into view, which would leave
+     the card positioned against stale geometry — so re-place it on scroll. */
+  var queued = false;
+  window.addEventListener('scroll', function () {
+    if (tip.dataset.show !== 'true' || queued) return;
+    queued = true;
+    requestAnimationFrame(function () {
+      queued = false;
+      var active = nodes.filter(function (n) { return n.classList.contains('is-active'); })[0];
+      if (active) showTip(active);
+    });
+  }, { passive: true });
+
+  tl.hidden = false;
+})();
+</script>
 
 </body>
 </html>
