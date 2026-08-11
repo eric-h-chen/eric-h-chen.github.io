@@ -117,9 +117,7 @@
   /* The photo is a three-quarter shot, so it's zoomed and panned onto the face.
      width = zoom (100% would fit the frame); left/top = pan. All three are
      percentages of the frame, so the mobile size crops identically.
-     Re-tune these if the image is ever swapped. NB palace.JPG is stored
-     sideways with EXIF orientation 6; the browser rights it to 4284x5712,
-     and these numbers are measured against that corrected portrait.       */
+     Re-tune these if the image is ever swapped.                          */
   .portrait img {
     position: absolute;
     width: 390%;
@@ -814,7 +812,7 @@
 
       <div>
         <div class="portrait">
-          <img src="palace.JPG" alt="Portrait of Eric Chen.">
+          <img src="palace-upright.jpg" alt="Portrait of Eric Chen.">
         </div>
       </div>
     </div>
