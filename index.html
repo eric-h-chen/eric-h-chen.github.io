@@ -379,6 +379,7 @@
   }
   .tl-year {
     position: absolute;
+    left: var(--at);
     top: 168px;
     transform: translateX(-50%);
     font-family: var(--mono);
@@ -396,6 +397,7 @@
   /* ── Beads ──────────────────────────────────────── */
   .tl-node {
     position: absolute;
+    left: var(--at);
     top: 130px;
     z-index: 2;   /* a pip landing on the same month tucks its stem behind */
     transform: translate(-50%, -50%);
@@ -441,6 +443,7 @@
      what each one is lives in the hover card, same as a bead. */
   .tl-mini {
     position: absolute;
+    left: var(--at);
     bottom: 62px;        /* .tl-inner height (192) − the line's top (130) */
     z-index: 1;          /* under the beads — see the note on .tl-node */
     transform: translateX(-50%);
@@ -596,6 +599,27 @@
     padding-top: 0.35rem;
     transition: color 0.15s ease;
   }
+  /* Logo sits alongside the whole text block rather than in its own grid
+     column, so the single-column phone layout doesn't strand it on a row
+     of its own. Same paper-and-hairline chip as the timeline beads. */
+  .role-body { display: flex; align-items: flex-start; gap: 0.9rem; }
+  .orglogo {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    margin-top: 0.1rem;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--rule);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    transition: box-shadow 0.15s ease;
+  }
+  /* .orglogo sets display:grid, which would otherwise beat [hidden] */
+  .orglogo[hidden] { display: none; }
+  .orglogo img { width: 64%; height: 64%; object-fit: contain; display: block; }
+  .role.is-active .orglogo, .role.is-target .orglogo { box-shadow: 0 0 0 1px var(--accent); }
   .role .what { font-size: 1.05rem; font-weight: 500; }
   .role .where {
     font-size: 0.92rem;
@@ -772,10 +796,60 @@
     .role::before { top: 1.75rem; }
     ul.roles { padding-left: 1.2rem; }
     .role::before { left: -1.2rem; }
-    .tl-inner { margin: 0 1.2rem; }
     .tl-tip { max-width: 15rem; }
-    /* Narrow screens scroll the line sideways rather than crushing it */
-    .tl-scroll { margin: 0 -1.5rem; padding: 0 1.5rem; }
+
+    /* ── Timeline stands on end ────────────────────────────
+       Same --at value each marker already carries, fed into `top` instead of
+       `left`. A phone has height to spare and no width, so the axis runs down
+       the page and nothing has to scroll sideways. Years sit to the left of
+       the line, pips reach out to the right of it. */
+    .tl-scroll { overflow: visible; margin: 0; padding: 0; }
+    .tl-inner {
+      min-width: 0;
+      width: 100%;
+      height: 700px;      /* the long axis now — room for 13 markers */
+      margin: 0;
+    }
+    .tl-line {
+      left: 4.1rem; right: auto;
+      top: 0; bottom: 0;
+      width: 1px; height: auto;
+    }
+    .tl-line::after {
+      left: -0.5px; right: auto;
+      top: 0; bottom: 0;
+      width: 2px; height: auto;
+      background: linear-gradient(to bottom, transparent, rgba(31,111,107,0.35) 8%, rgba(31,111,107,0.35) 96%, transparent);
+    }
+    .tl-node { left: 4.1rem; top: var(--at); }
+    /* Pip becomes a horizontal stem reaching right off the line, dot at its
+       far end — row-reverse puts the dot last, since it comes first in the DOM */
+    .tl-mini {
+      left: 4.1rem; bottom: auto; top: var(--at);
+      width: 48px; height: 22px;
+      flex-direction: row-reverse;
+      transform: translateY(-50%);
+    }
+    .mini-dot { margin: 0 0 0 0.15rem; }
+    .mini-stem {
+      width: auto; height: 1px;
+      background-image: linear-gradient(to right, var(--note) 45%, transparent 0);
+      background-size: 4px 1px;
+    }
+    .tl-mini:hover .mini-stem, .tl-mini.is-active .mini-stem {
+      background-image: linear-gradient(to right, rgba(31, 111, 107, 0.75) 45%, transparent 0);
+    }
+    /* Year label left of the line, with its tick reaching toward it */
+    .tl-year {
+      left: 0; top: var(--at);
+      width: 2.2rem; text-align: right;
+      transform: translateY(-50%);
+    }
+    .tl-year::before {
+      left: 3.45rem; top: 50%;
+      width: 6px; height: 1px;
+      transform: translateY(-50%);
+    }
     .pub { grid-template-columns: 3.2rem 1fr; gap: 0.9rem; }
   }
 </style>
@@ -1137,58 +1211,70 @@
     <ul class="roles">
       <li class="role" data-key="hrt">
         <div class="when">May – Aug 2026</div>
-        <div>
-          <div class="what">Algorithm Developer (Quant Researcher) Intern</div>
-          <div class="where">Hudson River Trading · New York, NY</div>
-          <p class="detail">
-            Trained equity return prediction models on high-frequency market data,
-            owning the work end to end — ingestion, features, training and validation.
-            Evaluated an alternative equity dataset and engineered features from it to
-            improve daily return predictions.
-          </p>
+        <div class="role-body">
+          <span class="orglogo"><img src="logos/hrt.png" alt=""></span>
+          <div>
+            <div class="what">Algorithm Developer (Quant Researcher) Intern</div>
+            <div class="where">Hudson River Trading · New York, NY</div>
+            <p class="detail">
+              Trained equity return prediction models on high-frequency market data,
+              owning the work end to end — ingestion, features, training and validation.
+              Evaluated an alternative equity dataset and engineered features from it to
+              improve daily return predictions.
+            </p>
+          </div>
         </div>
       </li>
       <li class="role current" data-key="sail">
         <div class="when">Oct 2025 – present</div>
-        <div>
-          <div class="what">Machine Learning Researcher — LLM judges for mathematics</div>
-          <div class="where">Stanford Artificial Intelligence Laboratory (SAIL) · Stanford, CA</div>
-          <p class="detail">
-            Sole first author. Designed and ran thirteen judge prompting experiments
-            across five LLMs using vLLM with batched inference on H200/B200 GPUs. Built
-            a 500-problem human-graded benchmark with analytic rubrics and analyzed
-            correlation and variance metrics in SciPy. Recruited and led a team of four
-            spanning undergrad through professor; published at ICLR (LLM Reasoning).
-          </p>
+        <div class="role-body">
+          <span class="orglogo"><img src="logos/sail.png" alt=""></span>
+          <div>
+            <div class="what">Machine Learning Researcher — LLM judges for mathematics</div>
+            <div class="where">Stanford Artificial Intelligence Laboratory (SAIL) · Stanford, CA</div>
+            <p class="detail">
+              Sole first author. Designed and ran thirteen judge prompting experiments
+              across five LLMs using vLLM with batched inference on H200/B200 GPUs. Built
+              a 500-problem human-graded benchmark with analytic rubrics and analyzed
+              correlation and variance metrics in SciPy. Recruited and led a team of four
+              spanning undergrad through professor; published at ICLR (LLM Reasoning).
+            </p>
+          </div>
         </div>
       </li>
       <li class="role" data-key="roblox">
         <div class="when">June – Sept 2025</div>
-        <div>
-          <div class="what">Machine Learning &amp; Software Engineer Intern</div>
-          <div class="where">Roblox · San Mateo, CA</div>
-          <p class="detail">
-            Designed and productionized transformer and set-transformer models that
-            embed and aggregate collections of user data. Deployed to production at
-            scale on Airflow, Kafka, Hive, Spark, AWS S3 and Kubeflow, increasing
-            alt-account detection precision 2× to 92% and enabling enforcement against
-            high-priority bad actors.
-          </p>
+        <div class="role-body">
+          <span class="orglogo"><img src="logos/roblox.png" alt=""></span>
+          <div>
+            <div class="what">Machine Learning &amp; Software Engineer Intern</div>
+            <div class="where">Roblox · San Mateo, CA</div>
+            <p class="detail">
+              Designed and productionized transformer and set-transformer models that
+              embed and aggregate collections of user data. Deployed to production at
+              scale on Airflow, Kafka, Hive, Spark, AWS S3 and Kubeflow, increasing
+              alt-account detection precision 2× to 92% and enabling enforcement against
+              high-priority bad actors.
+            </p>
+          </div>
         </div>
       </li>
       <li class="role" data-key="putnam">
         <div class="when">Jan 2024 – July 2025</div>
-        <div>
-          <div class="what">Machine Learning Researcher — Putnam-AXIOM</div>
-          <div class="where">Stanford AI Laboratory &amp; CURIS · Stanford, CA</div>
-          <p class="detail">
-            First author. Extracted and varied competition problems to build
-            Putnam-AXIOM, a 522-problem benchmark for higher-level mathematical
-            reasoning. Evaluated and supervised fine-tuning (FT and PEFT) of Mistral-7B,
-            LLaMA-8B and DeepSeek on virtual GPUs. Spearheaded a team of peers in
-            collaboration with Prof. Sanmi Koyejo; published at ICML and NeurIPS
-            (MATH-AI track).
-          </p>
+        <div class="role-body">
+          <span class="orglogo"><img src="logos/putnam-axiom.png" alt=""></span>
+          <div>
+            <div class="what">Machine Learning Researcher — Putnam-AXIOM</div>
+            <div class="where">Stanford AI Laboratory &amp; CURIS · Stanford, CA</div>
+            <p class="detail">
+              First author. Extracted and varied competition problems to build
+              Putnam-AXIOM, a 522-problem benchmark for higher-level mathematical
+              reasoning. Evaluated and supervised fine-tuning (FT and PEFT) of Mistral-7B,
+              LLaMA-8B and DeepSeek on virtual GPUs. Spearheaded a team of peers in
+              collaboration with Prof. Sanmi Koyejo; published at ICML and NeurIPS
+              (MATH-AI track).
+            </p>
+          </div>
         </div>
       </li>
     </ul>
@@ -1364,6 +1450,15 @@
     });
   });
 
+  /* ── Experience logos ──────────────────────────────────── */
+  /* No initials fallback here the way the beads have one — the organisation's
+     name is right beside the mark, so a missing file just leaves a gap. */
+  document.querySelectorAll('.orglogo img').forEach(function (img) {
+    function drop() { img.parentNode.hidden = true; }
+    img.addEventListener('error', drop);
+    if (img.complete && img.naturalWidth === 0) drop();
+  });
+
   /* ── Logo timeline ─────────────────────────────────────── */
   var tl = document.getElementById('timeline');
   if (!tl) return;
@@ -1411,7 +1506,7 @@
   [2022, 2023, 2024, 2025, 2026].forEach(function (year) {
     var mark = document.createElement('span');
     mark.className = 'tl-year';
-    mark.style.left = pct(year + '-01') + '%';
+    mark.style.setProperty('--at', pct(year + '-01') + '%');
     mark.textContent = year;
     inner.appendChild(mark);
   });
@@ -1423,7 +1518,9 @@
   var nodes = beads.concat(minis);
 
   nodes.forEach(function (node) {
-    node.style.left = pct(node.dataset.at) + '%';
+    /* Written as a custom property, not `left`, so the mobile layout can feed
+       the same number into `top` and stand the whole track on end. */
+    node.style.setProperty('--at', pct(node.dataset.at) + '%');
   });
 
   beads.forEach(function (node) {
