@@ -358,14 +358,14 @@
   .tl-inner {
     position: relative;
     min-width: 820px;   /* below this the track scrolls rather than crowding */
-    height: 192px;
+    height: 230px;
     margin: 0 1.6rem;   /* room for the first and last bead */
   }
   /* The headroom above the line is what the hover card opens into — trimming
      it much further starts pushing the card up over the section title. */
   .tl-line {
     position: absolute;
-    left: 0; right: 0; top: 130px;
+    left: 0; right: 0; top: 135px;
     height: 1px;
     background: var(--rule);
   }
@@ -380,7 +380,7 @@
   .tl-year {
     position: absolute;
     left: var(--at);
-    top: 168px;
+    top: 205px;
     transform: translateX(-50%);
     font-family: var(--mono);
     font-size: 0.68rem;
@@ -398,7 +398,7 @@
   .tl-node {
     position: absolute;
     left: var(--at);
-    top: 130px;
+    top: 135px;
     z-index: 2;   /* a pip landing on the same month tucks its stem behind */
     transform: translate(-50%, -50%);
     width: 46px; height: 46px;
@@ -444,7 +444,7 @@
   .tl-mini {
     position: absolute;
     left: var(--at);
-    bottom: 62px;        /* .tl-inner height (192) − the line's top (130) */
+    bottom: 95px;        /* .tl-inner height (230) − the line's top (135) */
     z-index: 1;          /* under the beads — see the note on .tl-node */
     transform: translateX(-50%);
     height: 48px;
@@ -475,6 +475,15 @@
     background-image: linear-gradient(var(--note) 45%, transparent 0);
     background-size: 1px 4px;
   }
+  /* Papers reach up out of the line, class projects reach down. Flipping the
+     flex direction puts the stem against the line either way, so the dot
+     always ends up on the outboard end. */
+  .tl-mini.down {
+    bottom: auto;
+    top: 135px;
+    flex-direction: column-reverse;
+  }
+  .tl-mini.down .mini-dot { margin: 0.15rem 0 0; }
   .tl-mini:hover .mini-dot,
   .tl-mini.is-active .mini-dot {
     background: var(--accent);
@@ -811,7 +820,7 @@
       margin: 0;
     }
     .tl-line {
-      left: 4.1rem; right: auto;
+      left: 50%; right: auto;
       top: 0; bottom: 0;
       width: 1px; height: auto;
     }
@@ -821,16 +830,22 @@
       width: 2px; height: auto;
       background: linear-gradient(to bottom, transparent, rgba(31,111,107,0.35) 8%, rgba(31,111,107,0.35) 96%, transparent);
     }
-    .tl-node { left: 4.1rem; top: var(--at); }
+    .tl-node { left: 50%; top: var(--at); }
     /* Pip becomes a horizontal stem reaching right off the line, dot at its
        far end — row-reverse puts the dot last, since it comes first in the DOM */
     .tl-mini {
-      left: 4.1rem; bottom: auto; top: var(--at);
+      left: 50%; right: auto; bottom: auto; top: var(--at);
       width: 48px; height: 22px;
       flex-direction: row-reverse;
       transform: translateY(-50%);
     }
     .mini-dot { margin: 0 0 0 0.15rem; }
+    /* Class projects mirror to the other side of the line */
+    .tl-mini.down {
+      left: auto; right: 50%; top: var(--at);
+      flex-direction: row;
+    }
+    .tl-mini.down .mini-dot { margin: 0 0.15rem 0 0; }
     .mini-stem {
       width: auto; height: 1px;
       background-image: linear-gradient(to right, var(--note) 45%, transparent 0);
@@ -840,14 +855,16 @@
       background-image: linear-gradient(to right, rgba(31, 111, 107, 0.75) 45%, transparent 0);
     }
     /* Year label left of the line, with its tick reaching toward it */
+    /* Years get their own lane outboard of the project pips, with a hairline
+       running back to the line so each label stays tied to its position. */
     .tl-year {
-      left: 0; top: var(--at);
+      left: auto; right: calc(50% + 58px); top: var(--at);
       width: 2.2rem; text-align: right;
       transform: translateY(-50%);
     }
     .tl-year::before {
-      left: 3.45rem; top: 50%;
-      width: 6px; height: 1px;
+      left: auto; right: -58px; top: 50%;
+      width: 58px; height: 1px;
       transform: translateY(-50%);
     }
     .pub { grid-template-columns: 3.2rem 1fr; gap: 0.9rem; }
@@ -952,7 +969,9 @@
                data-key must match a .pub or .project data-key further down the
                page, and the hover card names whichever it finds. A pip whose
                month collides with a bead tucks its stem behind it. -->
-          <button type="button" class="tl-mini" data-key="primes" data-at="2022-01"
+          <!-- A Projects card, but research rather than a class project, so it
+               reaches out the paper side instead of the one it would default to -->
+          <button type="button" class="tl-mini" data-key="primes" data-at="2022-01" data-side="up"
                   data-what="MIT PRIMES-USA" data-where="Mathematics research · Jan 2022 – May 2024" aria-describedby="tlTip">
             <span class="mini-dot"></span>
             <span class="mini-stem"></span>
@@ -974,6 +993,11 @@
           </button>
           <button type="button" class="tl-mini" data-key="mlab" data-at="2024-06"
                   data-what="Team MLab at SemEval-2024 Task 8" data-where="SemEval-2024 · June 2024" aria-describedby="tlTip">
+            <span class="mini-dot"></span>
+            <span class="mini-stem"></span>
+          </button>
+          <button type="button" class="tl-mini" data-key="judges" data-at="2026-04"
+                  data-what="Rethinking LLM judges for math grading" data-where="ICLR 2026 (LLM Reasoning)" aria-describedby="tlTip">
             <span class="mini-dot"></span>
             <span class="mini-stem"></span>
           </button>
@@ -1521,6 +1545,15 @@
     /* Written as a custom property, not `left`, so the mobile layout can feed
        the same number into `top` and stand the whole track on end. */
     node.style.setProperty('--at', pct(node.dataset.at) + '%');
+  });
+
+  /* Which way a pip reaches off the line: papers out one side, class projects
+     the other. Derived from the section it points at, so a pip added later
+     sorts itself; data-side="up|down" on the button overrides that. */
+  minis.forEach(function (m) {
+    var side = m.dataset.side ||
+      (nounFor(targetFor(m.dataset.key)) === 'project' ? 'down' : 'up');
+    m.classList.toggle('down', side === 'down');
   });
 
   beads.forEach(function (node) {
