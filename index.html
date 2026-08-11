@@ -241,6 +241,22 @@
     color: var(--accent);
   }
   .pub .venue .byline::after { content: " · "; color: var(--rule); }
+  /* Author list, in publication order. Only my own name is set in ink, so it
+     can be picked out of a long list at a glance. */
+  .pub .authors {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 0.35rem;
+    max-width: 46em;
+  }
+  .pub .authors strong { color: var(--ink); font-weight: 500; }
+  .pub .authors .eqcontrib {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
   /* Links as small chips, so there's an obvious thing to click */
   .pub .links, .project .links {
     margin-top: 0.7rem;
@@ -902,6 +918,7 @@
             <div class="year">2026</div>
             <div>
               <div class="title"><a href="https://openreview.net/pdf?id=MDArMFusA7">Mixture of Graders: Adaptive Strategy Routing for LLM-Based Mathematical Evaluation</a></div>
+              <div class="authors"><strong>Eric Chen</strong>, Aryan Gulati, Brando Miranda&dagger;, Zeyu Tang&dagger;, Sanmi Koyejo&dagger; <span class="eqcontrib">&dagger;equal advising</span></div>
               <div class="venue"><span class="byline">Lead author</span>To appear at ICML 2026 (AI4MATH).</div>
               <div class="links">
                 <a href="https://openreview.net/pdf?id=MDArMFusA7">PDF</a>
@@ -933,6 +950,7 @@
             <div class="year">2026</div>
             <div>
               <div class="title"><a href="https://openreview.net/pdf?id=vdXPorr099">Rethinking LLM Judges: Chain-of-Thought and Multi-Step Pipelines for Math Grading</a></div>
+              <div class="authors"><strong>Eric Chen</strong>, Aryan Gulati, Brando Miranda&dagger;, Zeyu Tang&dagger;, Sanmi Koyejo&dagger; <span class="eqcontrib">&dagger;equal advising</span></div>
               <div class="venue"><span class="byline">Lead author</span>To appear at ICLR 2026 (LLM Reasoning).</div>
               <div class="links">
                 <a href="https://openreview.net/pdf?id=vdXPorr099">PDF</a>
@@ -955,6 +973,7 @@
             <div class="year">2025</div>
             <div>
               <div class="title"><a href="https://arxiv.org/abs/2508.08292">Putnam-AXIOM: A Functional and Static Benchmark for Measuring Higher Level Mathematical Reasoning</a></div>
+              <div class="authors">Aryan Gulati*, Brando Miranda*, <strong>Eric Chen</strong>*, Emily Xia*, Kai Fronsdal*, Bruno Dumont, Elyas Obbad, Sanmi Koyejo <span class="eqcontrib">*equal contribution</span></div>
               <div class="venue"><span class="byline">First author</span>ICML 2025 and NeurIPS 2024 (MATH-AI). Featured on Hacker News.</div>
               <div class="links">
                 <a href="https://arxiv.org/abs/2508.08292">arXiv</a>
@@ -976,7 +995,28 @@
           <li class="pub">
             <div class="year">2024</div>
             <div>
+              <div class="title"><a href="https://aclanthology.org/2024.semeval-1.210/">Team MLab at SemEval-2024 Task 8: Analyzing Encoder Embeddings for Detecting LLM-generated Text</a></div>
+              <div class="authors">Kevin Li, Kenan Hasanaliyev, Sally Zhu, George Altshuler, Alden Eberts, <strong>Eric Chen</strong>, Kate Wang, Emily Xia, Eli Browne, Ian Chen</div>
+              <div class="venue">Proceedings of the 18th International Workshop on Semantic Evaluation (SemEval-2024), pp. 1463–1467.</div>
+              <div class="links">
+                <a href="https://aclanthology.org/2024.semeval-1.210.pdf">PDF</a>
+                <button type="button" class="abstract-toggle">Abstract <span class="caret"></span></button>
+              </div>
+              <div class="abstract"><div><p>
+                Telling human-written text from machine-generated text gets harder as language
+                models improve. Subtask B of SemEval-2024 Task 8 asks not just whether a passage
+                was machine-generated but which model produced it. We compared RoBERTa and DeBERTa
+                encoders on the task; our DeBERTa model beat the RoBERTa baseline by more than ten
+                points of leaderboard accuracy. PCA and t-SNE projections of the learned embeddings
+                show the model separating the outputs of different LLMs into distinct clusters.
+              </p></div></div>
+            </div>
+          </li>
+          <li class="pub">
+            <div class="year">2024</div>
+            <div>
               <div class="title"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0047248424000034">Using Machine Learning on New Feature Sets Extracted From 3D Models of Broken Animal Bones</a></div>
+              <div class="authors">Katrina Yezzi-Woodley, Alexander Terwilliger, Jiafeng Li, <strong>Eric Chen</strong>, Martha Tappen, Jeff Calder, Peter Olver</div>
               <div class="venue">Journal of Human Evolution, vol. 187. With AMAAZE, University of Minnesota.</div>
               <div class="links">
                 <a href="https://www.sciencedirect.com/science/article/abs/pii/S0047248424000034">Journal</a>
@@ -997,6 +1037,7 @@
             <div class="year">2023</div>
             <div>
               <div class="title"><a href="https://math.mit.edu/research/highschool/primes/materials/2022/Chen-Zitzewitz.pdf">Unitary Conditions for Lamé and Heun Differential Operators</a></div>
+              <div class="authors"><strong>Eric Chen</strong>, Alex Zitzewitz</div>
               <div class="venue">Joint Mathematics Meetings 2023; published by the MIT Mathematics Department. From MIT PRIMES-USA.</div>
               <div class="links">
                 <a href="https://math.mit.edu/research/highschool/primes/materials/2022/Chen-Zitzewitz.pdf">PDF</a>
@@ -1018,6 +1059,7 @@
             <div class="year">2023</div>
             <div>
               <div class="title"><a href="https://docs.google.com/presentation/d/1dNWLKaB_HyeP7CYZbnSLDJueCkSHKQdRepdJFpM91VI/edit?usp=sharing">Coarse Graining to Expedite Molecular Dynamics Simulations of Solvated Fibrinogen</a></div>
+              <div class="authors"><strong>Eric Chen</strong>, Ziji Zhang, Yuefan Deng, Peng Zhang, Miriam Rafailovich</div>
               <div class="venue">Oral Presentation at the Materials Research Society, Fall 2023 Meeting. From the Garcia Research Program, Stony Brook University.</div>
               <div class="links">
                 <a href="https://docs.google.com/presentation/d/1dNWLKaB_HyeP7CYZbnSLDJueCkSHKQdRepdJFpM91VI/edit?usp=sharing">Slides</a>
