@@ -82,8 +82,28 @@
   }
   nav .brand { color: var(--ink); text-decoration: none; font-weight: 500; }
   nav ul { display: flex; gap: 1.4rem; list-style: none; flex-wrap: wrap; }
-  nav ul a { color: var(--muted); text-decoration: none; }
+  nav ul a {
+    position: relative;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
   nav ul a:hover { color: var(--accent); }
+  /* Rule under the link for the section you're in. It's always in the DOM and
+     just scales open, so nothing shifts as the highlight moves along the bar. */
+  nav ul a::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    bottom: -0.4rem;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.18s ease;
+  }
+  nav ul a.is-current { color: var(--accent); }
+  nav ul a.is-current::after { transform: scaleX(1); }
 
   /* ── Header / hero ──────────────────────────────── */
   header.hero { padding: 5rem 0 3.5rem; }
@@ -773,7 +793,7 @@
   @media (max-width: 760px) {
     .cols { grid-template-columns: 1fr; gap: 1.5rem; }
     .sidenote { position: static; }
-    /* Tight enough that six links stay on one row under the brand — a sticky
+    /* Tight enough that the links stay on one row under the brand — a sticky
        bar shouldn't eat the screen. --nav-h must match the rendered height. */
     :root { --nav-h: 72px; }
     nav {
@@ -783,7 +803,7 @@
       font-size: 0.68rem;
     }
     nav .brand { white-space: nowrap; }
-    /* Six links won't fit one row on a phone, and a three-row sticky bar eats
+    /* Seven links won't fit one row on a phone, and a three-row sticky bar eats
        the screen — so the row scrolls sideways instead of wrapping. */
     nav ul {
       gap: 0.95rem;
@@ -879,6 +899,9 @@
     <a class="brand" href="#top">E. H. Chen</a>
     <ul>
       <li><a href="#contact">Contact</a></li>
+      <!-- Unhidden by the script alongside the section itself, so a browser
+           with JS off doesn't get a link to a hidden strip. -->
+      <li id="navTimeline" hidden><a href="#path">Timeline</a></li>
       <li><a href="#research">Research</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#projects">Projects</a></li>
@@ -1483,6 +1506,71 @@
     if (img.complete && img.naturalWidth === 0) drop();
   });
 
+  /* ── Nav highlight for the section in view ─────────────── */
+  /* The section you're in is whichever one's top has most recently passed
+     under the sticky bar — the same line anchor jumps land on. Sections with
+     no nav link (the timeline) are simply not candidates, so the link above
+     them stays lit while you scroll through. Runs in its own function because
+     the timeline code below bails early when there's no track to place. */
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav ul a[href^="#"]'));
+    var items = links.map(function (a) {
+      return { link: a, section: document.getElementById(a.getAttribute('href').slice(1)) };
+    }).filter(function (item) { return item.section; });
+    if (!items.length) return;
+
+    /* Read in document order, not nav order, so reordering the bar can't
+       break the "most recently passed" logic below. */
+    items.sort(function (a, b) {
+      return (a.section.compareDocumentPosition(b.section) & Node.DOCUMENT_POSITION_FOLLOWING)
+        ? -1 : 1;
+    });
+
+    var navBar = document.querySelector('nav');
+    var currentItem = null;
+
+    function mark(item) {
+      if (item === currentItem) return;
+      currentItem = item;
+      items.forEach(function (i) {
+        i.link.classList.toggle('is-current', i === item);
+        if (i === item) i.link.setAttribute('aria-current', 'true');
+        else i.link.removeAttribute('aria-current');
+      });
+    }
+
+    function update() {
+      var doc = document.documentElement;
+      var found = null;
+      /* At the very bottom, the last section wins — a short final section may
+         never get its top up under the bar. */
+      if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+        found = items[items.length - 1];
+      } else {
+        /* +2 for rounding: an anchor jump lands the top *on* the line. */
+        var line = (navBar ? navBar.getBoundingClientRect().bottom : 0) + 2;
+        items.forEach(function (item) {
+          if (item.section.hidden) return;
+          if (item.section.getBoundingClientRect().top <= line) found = item;
+        });
+      }
+      mark(found);   // null in the hero, where nothing is lit
+    }
+
+    var queued = false;
+    function schedule() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; update(); });
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    /* Scheduled rather than run outright: the first pass then happens a frame
+       later, once the rest of this script has unhidden the timeline. */
+    schedule();
+  })();
+
   /* ── Logo timeline ─────────────────────────────────────── */
   var tl = document.getElementById('timeline');
   if (!tl) return;
@@ -1688,6 +1776,8 @@
   }, { passive: true });
 
   document.getElementById('path').hidden = false;
+  var navTimeline = document.getElementById('navTimeline');
+  if (navTimeline) navTimeline.hidden = false;
 })();
 </script>
 
