@@ -689,6 +689,40 @@
   }
   .btn:hover { background: #185450; }
 
+  /* ── Honors & awards ────────────────────────────── */
+  /* Same year-in-the-margin rhythm as .roles, minus the dots and logos —
+     an award is a line, not a chapter. */
+  .awards { list-style: none; }
+  .award {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1.6rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .award:last-child { border-bottom: none; }
+  .award .when {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+  .award .what { font-size: 1.05rem; font-weight: 500; }
+  .award .where {
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.15rem;
+  }
+  .award .detail {
+    margin-top: 0.4rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 44em;
+  }
+
   /* ── Interests ──────────────────────────────────── */
   .interests {
     display: grid;
@@ -792,7 +826,7 @@
       font-size: 0.68rem;
     }
     nav .brand { white-space: nowrap; }
-    /* Seven links won't fit one row on a phone, and a three-row sticky bar eats
+    /* Eight links won't fit one row on a phone, and a three-row sticky bar eats
        the screen — so the row scrolls sideways instead of wrapping. */
     nav ul {
       gap: 0.95rem;
@@ -811,6 +845,8 @@
     .portrait { width: 170px; height: 170px; }
     .role { grid-template-columns: 1fr; gap: 0.4rem; }
     .role .when { padding-top: 0; }
+    .award { grid-template-columns: 1fr; gap: 0.3rem; }
+    .award .when { padding-top: 0; }
     .role::before { top: 1.75rem; }
     ul.roles { padding-left: 1.2rem; }
     .role::before { left: -1.2rem; }
@@ -894,6 +930,7 @@
       <li><a href="#research">Research</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#projects">Projects</a></li>
+      <li><a href="#honors">Honors</a></li>
       <li><a href="#cv">CV</a></li>
       <li><a href="#interests">Interests</a></li>
     </ul>
@@ -1375,6 +1412,38 @@
       </div>
 
     </div>
+  </section>
+
+  <!-- ══ HONORS & AWARDS ══ -->
+  <!-- Newest first. Copy an <li class="award"> to add one; .where and
+       .detail are both optional. -->
+  <section id="honors">
+    <p class="eyebrow">Honors &amp; Awards</p>
+    <ul class="awards">
+
+      <li class="award">
+        <div class="when">2026</div>
+        <div>
+          <div class="what">Phi Beta Kappa</div>
+          <div class="where">Stanford University chapter</div>
+          <p class="detail">
+            Elected in junior year, ahead of the senior-year cohort.
+          </p>
+        </div>
+      </li>
+
+      <li class="award">
+        <div class="when">2025</div>
+        <div>
+          <div class="what">Invited reviewer</div>
+          <div class="where">ICML AI4MATH 2025 &amp; NeurIPS MATH-AI 2025</div>
+          <p class="detail">
+            Reviewed submissions on mathematical reasoning for both workshops.
+          </p>
+        </div>
+      </li>
+
+    </ul>
   </section>
 
   <!-- ══ CV ══ -->
