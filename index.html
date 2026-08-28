@@ -123,15 +123,15 @@
       0 0 0 9px var(--paper),
       0 0 0 10px rgba(31, 111, 107, 0.4);
   }
-  /* The photo is a three-quarter shot, so it's zoomed and panned onto the face.
-     width = zoom (100% would fit the frame); left/top = pan. All three are
-     percentages of the frame, so the mobile size crops identically.
+  /* The photo is a wide (4:3) three-quarter shot, so it's zoomed and panned onto
+     the face. width = zoom (100% would fit the frame's width); left/top = pan.
+     All three are percentages of the frame, so the mobile size crops identically.
      Re-tune these if the image is ever swapped.                          */
   .portrait img {
     position: absolute;
-    width: 390%;
-    left: -171%;
-    top: -196%;
+    width: 370%;
+    left: -142.4%;
+    top: -69.2%;
     display: block;
   }
   .hero h1 em { font-style: italic; color: var(--accent); }
